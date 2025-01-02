@@ -4,6 +4,8 @@ import com.carlosribeiro.util.Id;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pedido implements Serializable {
     @Id
@@ -12,12 +14,14 @@ public class Pedido implements Serializable {
     private String dataCancelamento;
     private String status;
     private Cliente cliente;
+    private List<ItemDePedido> itensDePedido;
 
     public Pedido(LocalDate dataEmissao, String dataCancelamento, String status, Cliente cliente) {
         this.dataEmissao = dataEmissao;
         this.dataCancelamento = dataCancelamento;
         this.status = status;
         this.cliente = cliente;
+        this.itensDePedido = new ArrayList<>();
     }
 
     public String toString() {
@@ -65,5 +69,13 @@ public class Pedido implements Serializable {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public List<ItemDePedido> getItensDePedido() {
+        return itensDePedido;
+    }
+
+    public void setItensDePedido(List<ItemDePedido> itensDePedido) {
+        this.itensDePedido = itensDePedido;
     }
 }

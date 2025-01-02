@@ -1,7 +1,6 @@
 package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.PedidoDAO;
-import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
@@ -22,10 +21,10 @@ public class PedidoService {
     public Pedido cancelarPedido(int id, int clienteId) {
         Pedido pedido = recuperarPedidoPorId(id);
         if (pedido.getCliente().getId() != clienteId) {
-            throw new EntidadeNaoEncontradaException("Este pedido não pertence a este cliente.");
+            throw new IllegalArgumentException("Este pedido não pertence a este cliente.");
         }
         if (pedido.getStatus().equals("Cancelado")) {
-            throw new EntidadeNaoEncontradaException("Este pedido já foi cancelado.");
+            throw new IllegalStateException("Este pedido já foi cancelado.");
         }
         pedido.setDataCancelamento(LocalDate.now().toString());
         pedido.setStatus("Cancelado");
@@ -41,7 +40,7 @@ public class PedidoService {
     public Pedido remover(int id) {
         Pedido pedido = recuperarPedidoPorId(id);
         if (pedido == null) {
-            throw new EntidadeNaoEncontradaException("Pedido inexistente.");
+            throw new IllegalArgumentException("Pedido inexistente.");
         }
         pedidoDAO.remover(pedido.getId());
         return pedido;
@@ -50,7 +49,7 @@ public class PedidoService {
     public Pedido recuperarPedidoPorId(int id) {
         Pedido pedido = pedidoDAO.recuperarPorId(id);
         if (pedido == null)
-            throw new EntidadeNaoEncontradaException("Pedido inexistente.");
+            throw new IllegalArgumentException("Pedido inexistente.");
         return pedido;
     }
 

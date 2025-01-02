@@ -12,6 +12,7 @@ import java.util.List;
 public class PrincipalPedido {
 
     private final PedidoService pedidoService = new PedidoService();
+    private final PrincipalItemDePedido principalItemDePedido = new PrincipalItemDePedido();
 
     public void principal(Cliente cliente) {
 
@@ -34,7 +35,13 @@ public class PrincipalPedido {
                     LocalDate dataEmissao = LocalDate.now();
                     Pedido umPedido = new Pedido(dataEmissao, null, "Processando", cliente);
                     pedidoService.incluir(umPedido);
-                    System.out.println("\nPedido número " + umPedido.getId() + " cadastrado com sucesso!");
+                    principalItemDePedido.principal(umPedido);
+                    if (umPedido.getItensDePedido().isEmpty()) {
+                        pedidoService.remover(umPedido.getId());
+                        System.out.println("\nPedido removido pois não possui itens.");
+                    } else {
+                        System.out.println("\nPedido número " + umPedido.getId() + " cadastrado com sucesso!");
+                    }
                 }
                 case 2 -> {
                     int id = Console.readInt("Informe o número do pedido que você deseja cancelar (ou 0 para voltar): ");
