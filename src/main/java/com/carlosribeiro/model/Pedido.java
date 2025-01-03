@@ -14,23 +14,28 @@ public class Pedido implements Serializable {
     private String dataCancelamento;
     private String status;
     private Cliente cliente;
+    private String enderecoEntrega; // New attribute
     private List<ItemDePedido> itensDePedido;
 
-    public Pedido(LocalDate dataEmissao, String dataCancelamento, String status, Cliente cliente) {
+    public Pedido(LocalDate dataEmissao, String dataCancelamento, String status, Cliente cliente, String enderecoEntrega) {
         this.dataEmissao = dataEmissao;
         this.dataCancelamento = dataCancelamento;
         this.status = status;
         this.cliente = cliente;
+        this.enderecoEntrega = enderecoEntrega; // Initialize new attribute
         this.itensDePedido = new ArrayList<>();
     }
 
+    @Override
     public String toString() {
         return "ID = " + id +
                 "  Data de Emissão = " + dataEmissao +
                 "  Data de Cancelamento = " + dataCancelamento +
-                "  Status = " + status;
+                "  Status = " + status +
+                "  Endereço de Entrega = " + enderecoEntrega; // Include new attribute in toString
     }
 
+    // Getters and setters for all attributes, including the new one
     public int getId() {
         return id;
     }
@@ -45,6 +50,18 @@ public class Pedido implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public String getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public List<ItemDePedido> getItensDePedido() {
+        return itensDePedido;
     }
 
     public void setId(int id) {
@@ -63,16 +80,12 @@ public class Pedido implements Serializable {
         this.status = status;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    public List<ItemDePedido> getItensDePedido() {
-        return itensDePedido;
+    public void setEnderecoEntrega(String enderecoEntrega) {
+        this.enderecoEntrega = enderecoEntrega;
     }
 
     public void setItensDePedido(List<ItemDePedido> itensDePedido) {

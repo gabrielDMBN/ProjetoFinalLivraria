@@ -33,25 +33,35 @@ public class PrincipalItemDePedido {
                     for (Livro livro : livros) {
                         System.out.println(livro);
                     }
-                    int livroId = Console.readInt("Informe o ID do livro que deseja adicionar ao pedido: ");
-                    Livro livroSelecionado = livros.stream()
-                            .filter(livro -> livro.getId() == livroId)
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Livro não encontrado."));
-                    int quantidade = Console.readInt("Informe a quantidade desejada: ");
-                    try {
-                        ItemDePedido itemDePedido = itemDePedidoService.incluirItemDePedido(pedido, livroSelecionado, quantidade);
-                        pedido.getItensDePedido().add(itemDePedido);
-                        System.out.println("Item adicionado ao pedido com sucesso!");
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+                    while (true) {
+                        int livroId = Console.readInt("Informe o ID do livro que deseja adicionar ao pedido (ou 0 para voltar): ");
+                        if (livroId == 0) {
+                            break;
+                        }
+                        Livro livroSelecionado = livros.stream()
+                                .filter(livro -> livro.getId() == livroId)
+                                .findFirst()
+                                .orElse(null);
+                        if (livroSelecionado == null) {
+                            System.out.println("Livro não encontrado. Tente novamente.");
+                            continue;
+                        }
+                        int quantidade = Console.readInt("Informe a quantidade desejada: ");
+                        try {
+                            ItemDePedido itemDePedido = itemDePedidoService.incluirItemDePedido(pedido, livroSelecionado, quantidade);
+                            pedido.getItensDePedido().add(itemDePedido);
+                            System.out.println("Item adicionado ao pedido com sucesso!");
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                 }
                 case 2 -> {
                     List<ItemDePedido> itens = itemDePedidoService.recuperarItensDePedidoPorPedido(pedido.getId());
                     for (ItemDePedido item : itens) {
-                        double valorTotal = item.getLivro().getPreco() * item.getQtdPedida(); //////////////////////////
-                        System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Valor Total: " + valorTotal);////////
+                        double valorTotal = item.getLivro().getPreco() * item.getQtdPedida();
+                        System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Valor Total: " + valorTotal);
                     }
                 }
                 case 3 -> continua = false;

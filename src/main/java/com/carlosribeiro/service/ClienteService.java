@@ -42,6 +42,12 @@ public class ClienteService {
         return cliente;
     }
 
+    public Cliente alterarEndereco(int id, String novoEndereco) {
+        Cliente cliente = recuperarClientePorId(id);
+        cliente.setEndereco(novoEndereco);
+        return cliente;
+    }
+
     public void remover(int id) {
         Cliente cliente = recuperarClientePorId(id);
         List<Pedido> pedidos = pedidoDAO.recuperarTodosOsPedidosDeUmCliente(id);

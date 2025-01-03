@@ -31,7 +31,7 @@ public class Livro implements Serializable {
                 "  Título = " + titulo +
                 "  Descrição = " + descricao +
                 "  Quantidade em Estoque = " + qtdEstoque +
-                "  Preço = " + preco;
+                "  Preço = " + preco + " Item de Pedido = " + itemDePedidos.size();//////////////////////////
     }
 
     public int getId() {

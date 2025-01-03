@@ -28,7 +28,6 @@ public class Principal {
             System.out.println("3. Sair");
             System.out.println("4. Tratar Clientes"); //aaaaaaaaaaaaaaaaaaaaa
             System.out.println("5. Tratar Livros"); //aaaaaaaaaaaaaaaaaaaaa
-          //  System.out.println("6. Tratar Pedidos"); //aaaaaaaaaaaaaaaaaaaaa
 
 
             int opcao = Console.readInt('\n' + "Digite um número entre 1 e 3:");

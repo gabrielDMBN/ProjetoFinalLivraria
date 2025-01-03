@@ -10,18 +10,19 @@ public class Fatura implements Serializable {
     private int id;
     private LocalDate dataEmissao;
     private LocalDate dataCancelamento;
+    private Cliente cliente;
+    private int valorTotalFatura; // New attribute
+    private int valorDescontadoFatura; // New attribute
 
-    public Fatura(LocalDate dataEmissao, LocalDate dataCancelamento) {
+    public Fatura(LocalDate dataEmissao, LocalDate dataCancelamento, Cliente cliente, int valorTotalFatura, int valorDescontadoFatura) {
         this.dataEmissao = dataEmissao;
         this.dataCancelamento = dataCancelamento;
+        this.cliente = cliente;
+        this.valorTotalFatura = valorTotalFatura;
+        this.valorDescontadoFatura = valorDescontadoFatura;
     }
 
-    public String toString() {
-        return "ID = " + id +
-                "  Data de Emissão = " + dataEmissao +
-                "  Data de Cancelamento = " + dataCancelamento;
-    }
-
+    // Getters and setters for all attributes, including the new ones
     public int getId() {
         return id;
     }
@@ -34,6 +35,18 @@ public class Fatura implements Serializable {
         return dataCancelamento;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public int getValorTotalFatura() {
+        return valorTotalFatura;
+    }
+
+    public int getValorDescontadoFatura() {
+        return valorDescontadoFatura;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -44,5 +57,17 @@ public class Fatura implements Serializable {
 
     public void setDataCancelamento(LocalDate dataCancelamento) {
         this.dataCancelamento = dataCancelamento;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void setValorTotalFatura(int valorTotalFatura) {
+        this.valorTotalFatura = valorTotalFatura;
+    }
+
+    public void setValorDescontadoFatura(int valorDescontadoFatura) {
+        this.valorDescontadoFatura = valorDescontadoFatura;
     }
 }

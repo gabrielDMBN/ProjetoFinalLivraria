@@ -5,6 +5,7 @@ import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoService {
@@ -17,6 +18,7 @@ public class PedidoService {
         pedido.setStatus("Processando");
         return pedidoDAO.incluir(pedido);
     }
+
 
     public Pedido cancelarPedido(int id, int clienteId) {
         Pedido pedido = recuperarPedidoPorId(id);

@@ -20,8 +20,20 @@ public class ItemDePedidoService {
         }
         ItemDePedido itemDePedido = new ItemDePedido(quantidade, quantidade, quantidade, livro.getPreco(), pedido, livro);
         livro.setQtdEstoque(livro.getQtdEstoque() - quantidade);
+        livro.getItemDePedidos().add(itemDePedido); // Atualiza a lista de ItemDePedidos do Livro
         itemDePedidoDAO.incluir(itemDePedido);
         return itemDePedido;
+    }
+
+    public void remover(int itemId, int pedidoId) {
+        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemId);
+        if (itemDePedido == null || itemDePedido.getPedido().getId() != pedidoId) {
+            throw new IllegalArgumentException("Item de pedido inexistente ou não pertence ao pedido especificado.");
+        }
+        Livro livro = itemDePedido.getLivro();
+        livro.setQtdEstoque(livro.getQtdEstoque() + itemDePedido.getQtdPedida());
+        livro.getItemDePedidos().remove(itemDePedido); // Remove o ItemDePedido da lista do Livro
+        itemDePedidoDAO.remover(itemId);
     }
 
     public List<Livro> listarLivros() {
