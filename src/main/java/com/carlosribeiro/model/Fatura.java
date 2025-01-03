@@ -4,6 +4,8 @@ import com.carlosribeiro.util.Id;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Fatura implements Serializable {
     @Id
@@ -11,15 +13,17 @@ public class Fatura implements Serializable {
     private LocalDate dataEmissao;
     private LocalDate dataCancelamento;
     private Cliente cliente;
-    private int valorTotalFatura; // New attribute
-    private int valorDescontadoFatura; // New attribute
+    private double valorTotalFatura; // New attribute
+    private double valorDescontadoFatura; // New attribute
+    private List<ItemFaturado> itensFaturados;
 
-    public Fatura(LocalDate dataEmissao, LocalDate dataCancelamento, Cliente cliente, int valorTotalFatura, int valorDescontadoFatura) {
+    public Fatura(LocalDate dataEmissao, LocalDate dataCancelamento, Cliente cliente, double valorTotalFatura, double valorDescontadoFatura) {
         this.dataEmissao = dataEmissao;
         this.dataCancelamento = dataCancelamento;
         this.cliente = cliente;
         this.valorTotalFatura = valorTotalFatura;
         this.valorDescontadoFatura = valorDescontadoFatura;
+        this.itensFaturados = new ArrayList<>();
     }
 
     // Getters and setters for all attributes, including the new ones
@@ -39,11 +43,11 @@ public class Fatura implements Serializable {
         return cliente;
     }
 
-    public int getValorTotalFatura() {
+    public double getValorTotalFatura() {
         return valorTotalFatura;
     }
 
-    public int getValorDescontadoFatura() {
+    public double getValorDescontadoFatura() {
         return valorDescontadoFatura;
     }
 
@@ -63,11 +67,19 @@ public class Fatura implements Serializable {
         this.cliente = cliente;
     }
 
-    public void setValorTotalFatura(int valorTotalFatura) {
+    public void setValorTotalFatura(double valorTotalFatura) {
         this.valorTotalFatura = valorTotalFatura;
     }
 
-    public void setValorDescontadoFatura(int valorDescontadoFatura) {
+    public void setValorDescontadoFatura(double valorDescontadoFatura) {
         this.valorDescontadoFatura = valorDescontadoFatura;
+    }
+
+    public List<ItemFaturado> getItensFaturados() {
+        return itensFaturados;
+    }
+
+    public void setItensFaturados(List<ItemFaturado> itensFaturados) {
+        this.itensFaturados = itensFaturados;
     }
 }

@@ -8,9 +8,14 @@ public class ItemFaturado implements Serializable {
     @Id
     private int id;
     private int qtdFaturada;
+    private ItemDePedido itemDePedido;
+    private Fatura fatura;
 
-    public ItemFaturado(int qtdFaturada) {
+    public ItemFaturado(int qtdFaturada, ItemDePedido itemDePedido, Fatura fatura) {
         this.qtdFaturada = qtdFaturada;
+        this.itemDePedido = itemDePedido;
+        this.fatura = fatura;
+
     }
 
     public String toString() {
@@ -32,5 +37,21 @@ public class ItemFaturado implements Serializable {
 
     public void setQtdFaturada(int qtdFaturada) {
         this.qtdFaturada = qtdFaturada;
+    }
+
+    public ItemDePedido getItemDePedido() {
+        return itemDePedido;
+    }
+
+    public void setItemDePedido(ItemDePedido itemDePedido) {
+        this.itemDePedido = itemDePedido;
+    }
+
+    public Fatura getFatura() {
+        return fatura;
+    }
+
+    public void setFatura(Fatura fatura) {
+        this.fatura = fatura;
     }
 }

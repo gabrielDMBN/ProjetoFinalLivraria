@@ -34,7 +34,7 @@ public class Cliente implements Serializable {
                 "  Nome = " + nome +
                 "  Email = " + email +
                 "  Telefone = " + telefone +
-                "  Endereço = " + endereco ;
+                "  Endereço = " + endereco ; ////////+ "  N Pedidos = " + pedidos.size()//////////////////
     }
 
     // Getters and setters for all attributes, including the new one

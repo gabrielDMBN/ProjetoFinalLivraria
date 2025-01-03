@@ -52,7 +52,7 @@ public class ClienteService {
         Cliente cliente = recuperarClientePorId(id);
         List<Pedido> pedidos = pedidoDAO.recuperarTodosOsPedidosDeUmCliente(id);
         if (!pedidos.isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Este cliente possui pedidos e não pode ser removido.");
+            throw new EntidadeNaoEncontradaException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
         }
         clienteDAO.remover(id);
     }

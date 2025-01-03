@@ -16,6 +16,7 @@ public class PrincipalPedido {
     private final PedidoService pedidoService = new PedidoService();
     private final PrincipalItemDePedido principalItemDePedido = new PrincipalItemDePedido();
     private final ItemDePedidoService itemDePedidoService = new ItemDePedidoService();
+    private final PrincipalItemFaturado principalItemFaturado = new PrincipalItemFaturado();
 
     public void principal(Cliente cliente) {
 
@@ -28,9 +29,10 @@ public class PrincipalPedido {
             System.out.println("2. Cancelar um pedido");
             System.out.println("3. Listar todos pedidos");
             System.out.println("4. Ver itens de um pedido");
-            System.out.println("5. Voltar");
+            System.out.println("5. Faturar Pedido");
+            System.out.println("6. Voltar");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 5:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 6:");
 
             System.out.println();
 
@@ -83,7 +85,7 @@ public class PrincipalPedido {
                                 List<ItemDePedido> itens = itemDePedidoService.recuperarItensDePedidoPorPedido(pedido.getId());
                                 for (ItemDePedido item : itens) {
                                     double valorTotal = item.getLivro().getPreco() * item.getQtdPedida();
-                                    System.out.println("ID: " + item.getId() + " | Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Valor Total: " + valorTotal);
+                                    System.out.println("ID: " + item.getId() + " | Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Quantidade a Faturar: " + item.getQtdAFaturar() + " | Valor Total: " + valorTotal);
                                 }
                                 System.out.println("1. Remover item do pedido");
                                 System.out.println("2. Voltar");
@@ -118,8 +120,8 @@ public class PrincipalPedido {
                         }
                     }
                 }
-                case 5 -> continua = false;
-
+                case 5 -> principalItemFaturado.principal(cliente.getId());
+                case 6 -> continua = false;
                 default -> System.out.println('\n' + "Opção inválida!");
             }
         }

@@ -15,12 +15,7 @@ public class ItemDePedidoService {
     private final LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
 
     public ItemDePedido incluirItemDePedido(Pedido pedido, Livro livro, int quantidade) {
-        if (livro.getQtdEstoque() < quantidade) {
-            throw new IllegalArgumentException("Quantidade de estoque insuficiente.");
-        }
         ItemDePedido itemDePedido = new ItemDePedido(quantidade, quantidade, quantidade, livro.getPreco(), pedido, livro);
-        livro.setQtdEstoque(livro.getQtdEstoque() - quantidade);
-        livro.getItemDePedidos().add(itemDePedido); // Atualiza a lista de ItemDePedidos do Livro
         itemDePedidoDAO.incluir(itemDePedido);
         return itemDePedido;
     }
@@ -30,9 +25,6 @@ public class ItemDePedidoService {
         if (itemDePedido == null || itemDePedido.getPedido().getId() != pedidoId) {
             throw new IllegalArgumentException("Item de pedido inexistente ou não pertence ao pedido especificado.");
         }
-        Livro livro = itemDePedido.getLivro();
-        livro.setQtdEstoque(livro.getQtdEstoque() + itemDePedido.getQtdPedida());
-        livro.getItemDePedidos().remove(itemDePedido); // Remove o ItemDePedido da lista do Livro
         itemDePedidoDAO.remover(itemId);
     }
 

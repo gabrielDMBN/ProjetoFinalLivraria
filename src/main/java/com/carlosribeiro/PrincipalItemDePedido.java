@@ -61,7 +61,7 @@ public class PrincipalItemDePedido {
                     List<ItemDePedido> itens = itemDePedidoService.recuperarItensDePedidoPorPedido(pedido.getId());
                     for (ItemDePedido item : itens) {
                         double valorTotal = item.getLivro().getPreco() * item.getQtdPedida();
-                        System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Valor Total: " + valorTotal);
+                        System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Quantidade a Faturar: " + item.getQtdAFaturar() + " | Valor Total: " + valorTotal);
                     }
                 }
                 case 3 -> continua = false;

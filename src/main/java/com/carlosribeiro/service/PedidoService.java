@@ -1,11 +1,11 @@
 package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.PedidoDAO;
+import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoService {
@@ -18,7 +18,6 @@ public class PedidoService {
         pedido.setStatus("Processando");
         return pedidoDAO.incluir(pedido);
     }
-
 
     public Pedido cancelarPedido(int id, int clienteId) {
         Pedido pedido = recuperarPedidoPorId(id);
@@ -50,8 +49,9 @@ public class PedidoService {
 
     public Pedido recuperarPedidoPorId(int id) {
         Pedido pedido = pedidoDAO.recuperarPorId(id);
-        if (pedido == null)
-            throw new IllegalArgumentException("Pedido inexistente.");
+        if (pedido == null) {
+            throw new EntidadeNaoEncontradaException("Pedido inexistente.");
+        }
         return pedido;
     }
 

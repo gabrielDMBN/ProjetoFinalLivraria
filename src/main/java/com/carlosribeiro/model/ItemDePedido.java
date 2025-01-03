@@ -3,6 +3,8 @@ package com.carlosribeiro.model;
 import com.carlosribeiro.util.Id;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDePedido implements Serializable {
     @Id
@@ -13,6 +15,7 @@ public class ItemDePedido implements Serializable {
     private double precoCobrado;
     private Pedido pedido;
     private  Livro livro;
+    private List<ItemFaturado> itensFaturados;
 
     public ItemDePedido(int qtdPedida, int qtdRestante, int qtdAFaturar, double precoCobrado, Pedido pedido, Livro livro) {
         this.qtdPedida = qtdPedida;
@@ -21,6 +24,7 @@ public class ItemDePedido implements Serializable {
         this.precoCobrado = precoCobrado;
         this.pedido = pedido;
         this.livro = livro;
+        this.itensFaturados = new ArrayList<>();
     }
 
     public String toString() {
@@ -85,5 +89,13 @@ public class ItemDePedido implements Serializable {
 
     public void setLivro(Livro livro) {
         this.livro = livro;
+    }
+
+    public List<ItemFaturado> getItensFaturados() {
+        return itensFaturados;
+    }
+
+    public void setItensFaturados(List<ItemFaturado> itensFaturados) {
+        this.itensFaturados = itensFaturados;
     }
 }
