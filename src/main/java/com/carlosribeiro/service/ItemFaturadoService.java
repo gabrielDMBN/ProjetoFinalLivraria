@@ -1,13 +1,9 @@
 package com.carlosribeiro.service;
 
-import com.carlosribeiro.dao.FaturaDAO;
 import com.carlosribeiro.dao.ItemFaturadoDAO;
-import com.carlosribeiro.dao.LivroDAO;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.ItemFaturado;
-import com.carlosribeiro.model.Livro;
-import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
 import java.time.LocalDate;
@@ -17,8 +13,7 @@ import java.util.List;
 public class ItemFaturadoService {
 
     private final ItemFaturadoDAO itemFaturadoDAO = FabricaDeDaos.getDAO(ItemFaturadoDAO.class);
-    private final LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
-    private final FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
+    private final FaturaService faturaService = new FaturaService();
 
     public ItemFaturado incluirItemFaturado(ItemFaturado itemFaturado) {
         itemFaturadoDAO.incluir(itemFaturado);
@@ -30,8 +25,12 @@ public class ItemFaturadoService {
         if (itemFaturado == null) {
             throw new IllegalArgumentException("Item faturado inexistente.");
         }
-        Livro livro = itemFaturado.getItemDePedido().getLivro();
-        livro.setQtdEstoque(livro.getQtdEstoque() + itemFaturado.getQtdFaturada());
+        ItemDePedido itemDePedido = itemFaturado.getItemDePedido();
+        itemDePedido.getLivro().setQtdEstoque(itemDePedido.getLivro().getQtdEstoque() + itemFaturado.getQtdFaturada());
+
+        // Remove the ItemFaturado from the list in ItemDePedido
+        itemDePedido.getItensFaturados().remove(itemFaturado);
+
         itemFaturadoDAO.remover(itemFaturadoId);
     }
 
@@ -39,49 +38,75 @@ public class ItemFaturadoService {
         return itemFaturadoDAO.recuperarItensFaturadosPorItemDePedido(itemDePedidoId);
     }
 
-    public boolean faturarPedido(Pedido pedido) {
+    public boolean faturarPedido(ItemDePedido itemDePedido) {
+        // Debug statement to check if the method is called multiple times
+        System.out.println("faturarPedido method called for Pedido ID: " + itemDePedido.getPedido().getId());
+
+        // Check if the order is canceled
+        if ("Cancelado".equals(itemDePedido.getPedido().getStatus())) {
+            System.out.println("O pedido está cancelado e não pode ser faturado.");
+            return false;
+        }
+
         boolean algumItemFaturado = false;
+        boolean faltaEstoque = false;
+        boolean todosItensFaturados = true;
         List<ItemFaturado> itensFaturados = new ArrayList<>();
         double valorTotalFatura = 0;
-        double valorDescontadoFatura = 0;
 
-        for (ItemDePedido itemDePedido : pedido.getItensDePedido()) {
-            ItemFaturado itemFaturado = faturarItemDePedido(itemDePedido);
-            if (itemFaturado != null) {
-                itensFaturados.add(itemFaturado);
-                valorTotalFatura += itemFaturado.getQtdFaturada() * itemDePedido.getLivro().getPreco();
-                valorDescontadoFatura += itemFaturado.getQtdFaturada() * 0.05;
-                algumItemFaturado = true;
+        // Faturar todos os itens do pedido
+        for (ItemDePedido item : itemDePedido.getPedido().getItensDePedido()) {
+            if (item.getQtdAFaturar() > 0) {
+                ItemFaturado itemFaturado = faturarItemDePedido(item);
+                if (itemFaturado != null) {
+                    itensFaturados.add(itemFaturado);
+                    valorTotalFatura += itemFaturado.getQtdFaturada() * item.getLivro().getPreco();
+                    algumItemFaturado = true;
+                } else {
+                    faltaEstoque = true;
+                }
+            } else {
+                todosItensFaturados &= item.getQtdAFaturar() == 0;
             }
         }
 
+        // Criar uma única fatura se algum item foi faturado
         if (algumItemFaturado) {
-            Fatura fatura = new Fatura(LocalDate.now(), null, pedido.getCliente(), valorTotalFatura, valorDescontadoFatura);
+            Fatura fatura = new Fatura(LocalDate.now(), null, itemDePedido.getPedido().getCliente(), valorTotalFatura, 0);
             fatura.setItensFaturados(itensFaturados);
-            faturaDAO.incluir(fatura);
+            faturaService.incluir(fatura);
 
-            for (ItemFaturado itemFaturado : itensFaturados) {
-                itemFaturado.setFatura(fatura);
-                //itemFaturadoDAO.atualizar(itemFaturado);
+            for (ItemFaturado item : itensFaturados) {
+                item.setFatura(fatura);
             }
+        } else if (todosItensFaturados) {
+            System.out.println("Todos os itens do pedido já foram faturados.");
+        } else if (faltaEstoque) {
+            System.out.println("Nenhum item foi faturado devido à falta de estoque.");
+        }
+
+        // Atualizar o status do pedido se todos os itens foram faturados
+        if (todosItensFaturados) {
+            itemDePedido.getPedido().setStatus("Faturado");
         }
 
         return algumItemFaturado;
     }
 
     private ItemFaturado faturarItemDePedido(ItemDePedido itemDePedido) {
-        Livro livro = itemDePedido.getLivro();
         int qtdAFaturar = itemDePedido.getQtdAFaturar();
-        int qtdFaturada = Math.min(qtdAFaturar, livro.getQtdEstoque());
+        int qtdFaturada = Math.min(qtdAFaturar, itemDePedido.getLivro().getQtdEstoque());
 
         if (qtdFaturada > 0) {
             ItemFaturado itemFaturado = new ItemFaturado(qtdFaturada, itemDePedido, null);
             incluirItemFaturado(itemFaturado);
-            livro.setQtdEstoque(livro.getQtdEstoque() - qtdFaturada);
+            itemDePedido.getLivro().setQtdEstoque(itemDePedido.getLivro().getQtdEstoque() - qtdFaturada);
             itemDePedido.setQtdAFaturar(qtdAFaturar - qtdFaturada);
 
+            itemDePedido.getItensFaturados().add(itemFaturado);
+
             if (itemDePedido.getQtdAFaturar() > 0) {
-                System.out.println("Ainda falta faturar " + itemDePedido.getQtdAFaturar() + " unidades do livro " + livro.getTitulo() + " por falta de estoque.");
+                System.out.println("Ainda falta faturar " + itemDePedido.getQtdAFaturar() + " unidades do livro " + itemDePedido.getLivro().getTitulo() + " por falta de estoque.");
             }
             return itemFaturado;
         }

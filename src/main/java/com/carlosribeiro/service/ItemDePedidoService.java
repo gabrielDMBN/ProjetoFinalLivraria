@@ -13,6 +13,7 @@ public class ItemDePedidoService {
 
     private final ItemDePedidoDAO itemDePedidoDAO = FabricaDeDaos.getDAO(ItemDePedidoDAO.class);
     private final LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
+    private final PedidoService pedidoService = new PedidoService();
 
     public ItemDePedido incluirItemDePedido(Pedido pedido, Livro livro, int quantidade) {
         ItemDePedido itemDePedido = new ItemDePedido(quantidade, quantidade, quantidade, livro.getPreco(), pedido, livro);
@@ -20,12 +21,34 @@ public class ItemDePedidoService {
         return itemDePedido;
     }
 
-    public void remover(int itemId, int pedidoId) {
-        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemId);
-        if (itemDePedido == null || itemDePedido.getPedido().getId() != pedidoId) {
-            throw new IllegalArgumentException("Item de pedido inexistente ou não pertence ao pedido especificado.");
+    public void remover(int itemDePedidoId, int pedidoId) {
+        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemDePedidoId);
+        if (itemDePedido == null) {
+            throw new IllegalArgumentException("Item de pedido inexistente.");
         }
-        itemDePedidoDAO.remover(itemId);
+        if (itemDePedido.getPedido().getId() != pedidoId) {
+            throw new IllegalArgumentException("Item de pedido não pertence ao pedido especificado.");
+        }
+        if (!itemDePedido.getItensFaturados().isEmpty()) {
+            throw new IllegalArgumentException("Não é possível remover o item de pedido. Ele está em faturamento.");
+        }
+        itemDePedidoDAO.remover(itemDePedidoId);
+    }
+
+    public void listarPedidosResumidos(int clienteId) {
+        List<Pedido> pedidos = pedidoService.recuperarTodosOsPedidosDeUmCliente(clienteId);
+        if (pedidos.isEmpty()) {
+            System.out.println("Nenhum pedido encontrado para o cliente ID: " + clienteId);
+        } else {
+            System.out.println("Pedidos do cliente ID: " + clienteId);
+            for (Pedido pedido : pedidos) {
+                System.out.println("Pedido ID: " + pedido.getId() + " | Status: " + pedido.getStatus());
+                for (ItemDePedido item : pedido.getItensDePedido()) {
+                    System.out.println("  - Livro: " + item.getLivro().getTitulo() + " | Preço: " + item.getLivro().getPreco() + " | Quantidade: " + item.getQtdPedida());
+                }
+                System.out.println("----------------------------------------");
+            }
+        }
     }
 
     public List<Livro> listarLivros() {

@@ -11,11 +11,8 @@ import java.util.Map;
 public class Principal {
     public static void main(String[] args) {
 
-        PrincipalProduto principalProduto = new PrincipalProduto();
-        PrincipalLance principalLance = new PrincipalLance();
         PrincipalCliente principalCliente = new PrincipalCliente();
         PrincipalLivro principalLivro = new PrincipalLivro();
-        PrincipalPedido principalPedido = new PrincipalPedido();
 
         recuperarDados();
 
@@ -23,12 +20,9 @@ public class Principal {
         while (continua) {
             System.out.println('\n' + "========================================================");
             System.out.println('\n' + "O que você deseja fazer?");
-            System.out.println('\n' + "1. Tratar Produtos");
-            System.out.println("2. Tratar Lances");
+            System.out.println('\n' + "1. Tratar Clientes");
+            System.out.println("2. Tratar Livros");
             System.out.println("3. Sair");
-            System.out.println("4. Tratar Clientes"); //aaaaaaaaaaaaaaaaaaaaa
-            System.out.println("5. Tratar Livros"); //aaaaaaaaaaaaaaaaaaaaa
-
 
             int opcao = Console.readInt('\n' + "Digite um número entre 1 e 3:");
 
@@ -36,30 +30,20 @@ public class Principal {
 
             switch (opcao) {
                 case 1 -> {
-                    principalProduto.principal();
+                    principalCliente.principal();
                 }
                 case 2 -> {
-                    principalLance.principal();
+                    principalLivro.principal();
                 }
                 case 3 -> {
                     salvarDados();
                     continua = false;
                 }
-                case 4 -> {
-                    principalCliente.principal();
-                }
-                case 5 -> {
-                    principalLivro.principal();
-                }
-                case 6 -> {
-                //    principalPedido.principal();
-                }
-
                 default -> System.out.println('\n' + "Opção inválida!");
             }
         }
     }
-    //AJUSTAR=====================================================================
+
     private static void salvarDados() {
         ProdutoDAO produtoDAO = FabricaDeDaos.getDAO(ProdutoDAO.class);
         LanceDAO lanceDAO = FabricaDeDaos.getDAO(LanceDAO.class);
@@ -67,6 +51,8 @@ public class Principal {
         PedidoDAO pedidoDAO = FabricaDeDaos.getDAO(PedidoDAO.class);
         LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
         ItemDePedidoDAO itemDePedidoDAO = FabricaDeDaos.getDAO(ItemDePedidoDAO.class);
+        ItemFaturadoDAO itemFaturadoDAO = FabricaDeDaos.getDAO(ItemFaturadoDAO.class);
+        FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
 
         Map<Integer, Produto> mapDeProdutos = produtoDAO.getMap();
         int contadorProdutos = produtoDAO.getContador();
@@ -80,6 +66,10 @@ public class Principal {
         int contadorLivros = livroDAO.getContador();
         Map<Integer, ItemDePedido> mapDeItensDePedido = itemDePedidoDAO.getMap();
         int contadorItensDePedido = itemDePedidoDAO.getContador();
+        Map<Integer, ItemFaturado> mapDeItensFaturados = itemFaturadoDAO.getMap();
+        int contadorItensFaturados = itemFaturadoDAO.getContador();
+        Map<Integer, Fatura> mapDeFaturas = faturaDAO.getMap();
+        int contadorFaturas = faturaDAO.getContador();
 
         try {
             FileOutputStream fos = new FileOutputStream("arquivo.dat");
@@ -96,11 +86,16 @@ public class Principal {
             oos.writeInt(contadorLivros);
             oos.writeObject(mapDeItensDePedido);
             oos.writeInt(contadorItensDePedido);
+            oos.writeObject(mapDeItensFaturados);
+            oos.writeInt(contadorItensFaturados);
+            oos.writeObject(mapDeFaturas);
+            oos.writeInt(contadorFaturas);
             oos.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     private static void recuperarDados() {
         try {
             FileInputStream fis = new FileInputStream("arquivo.dat");
@@ -118,6 +113,10 @@ public class Principal {
             int contadorLivros = ois.readInt();
             Map<Integer, ItemDePedido> mapDeItensDePedido = (Map<Integer, ItemDePedido>) ois.readObject();
             int contadorItensDePedido = ois.readInt();
+            Map<Integer, ItemFaturado> mapDeItensFaturados = (Map<Integer, ItemFaturado>) ois.readObject();
+            int contadorItensFaturados = ois.readInt();
+            Map<Integer, Fatura> mapDeFaturas = (Map<Integer, Fatura>) ois.readObject();
+            int contadorFaturas = ois.readInt();
 
             ProdutoDAO produtoDAO = FabricaDeDaos.getDAO(ProdutoDAO.class);
             LanceDAO lanceDAO = FabricaDeDaos.getDAO(LanceDAO.class);
@@ -125,6 +124,8 @@ public class Principal {
             PedidoDAO pedidoDAO = FabricaDeDaos.getDAO(PedidoDAO.class);
             LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
             ItemDePedidoDAO itemDePedidoDAO = FabricaDeDaos.getDAO(ItemDePedidoDAO.class);
+            ItemFaturadoDAO itemFaturadoDAO = FabricaDeDaos.getDAO(ItemFaturadoDAO.class);
+            FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
 
             produtoDAO.setMap(mapDeProdutos);
             produtoDAO.setContador(contadorProdutos);
@@ -138,6 +139,10 @@ public class Principal {
             livroDAO.setContador(contadorLivros);
             itemDePedidoDAO.setMap(mapDeItensDePedido);
             itemDePedidoDAO.setContador(contadorItensDePedido);
+            itemFaturadoDAO.setMap(mapDeItensFaturados);
+            itemFaturadoDAO.setContador(contadorItensFaturados);
+            faturaDAO.setMap(mapDeFaturas);
+            faturaDAO.setContador(contadorFaturas);
 
             ois.close();
         } catch (FileNotFoundException e) {

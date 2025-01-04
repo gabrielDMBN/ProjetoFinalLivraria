@@ -16,6 +16,7 @@ public class Cliente implements Serializable {
     private String endereco;
     private List<Pedido> pedidos;
     private List<Fatura> faturas;
+    private int qtdFaturas; // New attribute
 
     public Cliente(String cpf, String nome, String email, String telefone, String endereco) {
         this.cpf = cpf;
@@ -25,6 +26,7 @@ public class Cliente implements Serializable {
         this.endereco = endereco;
         this.pedidos = new ArrayList<>();
         this.faturas = new ArrayList<>();
+        this.qtdFaturas = 0;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class Cliente implements Serializable {
                 "  Nome = " + nome +
                 "  Email = " + email +
                 "  Telefone = " + telefone +
-                "  Endereço = " + endereco ; ////////+ "  N Pedidos = " + pedidos.size()//////////////////
+                "  Endereço = " + endereco ;
     }
 
     // Getters and setters for all attributes, including the new one
@@ -100,5 +102,13 @@ public class Cliente implements Serializable {
 
     public void setFaturas(List<Fatura> faturas) {
         this.faturas = faturas;
+    }
+
+    public int getQtdFaturas() {
+        return qtdFaturas;
+    }
+
+    public void setQtdFaturas(int qtdFaturas) {
+        this.qtdFaturas = qtdFaturas;
     }
 }

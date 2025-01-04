@@ -4,6 +4,7 @@ import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.Livro;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.service.ItemDePedidoService;
+import com.carlosribeiro.service.PedidoService;
 import corejava.Console;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class PrincipalItemDePedido {
 
     private final ItemDePedidoService itemDePedidoService = new ItemDePedidoService();
+    //private final PedidoService pedidoService = new PedidoService();
 
     public void principal(Pedido pedido) {
         boolean continua = true;
@@ -20,9 +22,10 @@ public class PrincipalItemDePedido {
             System.out.println('\n' + "O que você deseja fazer?");
             System.out.println('\n' + "1. Adicionar item ao pedido");
             System.out.println("2. Listar itens do pedido");
-            System.out.println("3. Voltar");
+            System.out.println("3. Remover item do pedido");
+            System.out.println("4. Voltar");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 3:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 4:");
 
             System.out.println();
 
@@ -64,7 +67,25 @@ public class PrincipalItemDePedido {
                         System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida() + " | Quantidade a Faturar: " + item.getQtdAFaturar() + " | Valor Total: " + valorTotal);
                     }
                 }
-                case 3 -> continua = false;
+                case 3 -> {
+                    List<ItemDePedido> itens = itemDePedidoService.recuperarItensDePedidoPorPedido(pedido.getId());
+                    if (itens.isEmpty()) {
+                        System.out.println("Nenhum item para remover.");
+                        break;
+                    }
+                    for (ItemDePedido item : itens) {
+                        System.out.println("ID: " + item.getId() + " | Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+                    }
+                    int itemId = Console.readInt("Informe o ID do item que deseja remover: ");
+                    try {
+                        itemDePedidoService.remover(itemId , pedido.getId());
+                        pedido.getItensDePedido().removeIf(item -> item.getId() == itemId);
+                        System.out.println("Item removido com sucesso!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                case 4 -> continua = false;
 
                 default -> System.out.println('\n' + "Opção inválida!");
             }
