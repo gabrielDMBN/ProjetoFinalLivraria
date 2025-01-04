@@ -11,6 +11,7 @@ public class PrincipalCliente {
 
     private final ClienteService clienteService = new ClienteService();
     private final PrincipalPedido principalPedido = new PrincipalPedido();
+    private final PrincipalFatura principalFatura = new PrincipalFatura();
 
     public void principal() {
 
@@ -23,9 +24,10 @@ public class PrincipalCliente {
             System.out.println("3. Remover um cliente");
             System.out.println("4. Listar todos clientes");
             System.out.println("5. Gerenciar pedidos de um cliente");
-            System.out.println("6. Voltar");
+            System.out.println("6. Gerenciar faturas de um cliente");
+            System.out.println("7. Voltar");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 6:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 7:");
 
             System.out.println();
 
@@ -35,7 +37,8 @@ public class PrincipalCliente {
                     String nome = Console.readLine("Informe o nome do cliente: ");
                     String email = Console.readLine("Informe o email do cliente: ");
                     String telefone = Console.readLine("Informe o telefone do cliente: ");
-                    Cliente umCliente = new Cliente(cpf, nome, email, telefone);
+                    String endereco = Console.readLine("Informe o endereço do cliente: ");
+                    Cliente umCliente = new Cliente(cpf, nome, email, telefone, endereco);
                     clienteService.incluir(umCliente);
                     System.out.println("\nCliente número " + umCliente.getId() + " cadastrado com sucesso!");
                 }
@@ -51,7 +54,8 @@ public class PrincipalCliente {
                         System.out.println("2. Nome");
                         System.out.println("3. Email");
                         System.out.println("4. Telefone");
-                        int opcaoAlterar = Console.readInt("Digite um número entre 1 e 4:");
+                        System.out.println("5. Endereço");
+                        int opcaoAlterar = Console.readInt("Digite um número entre 1 e 5:");
 
                         switch (opcaoAlterar) {
                             case 1 -> {
@@ -73,6 +77,11 @@ public class PrincipalCliente {
                                 String novoTelefone = Console.readLine("Informe o novo telefone: ");
                                 clienteService.alterarTelefone(id, novoTelefone);
                                 System.out.println('\n' + "Alteração de telefone efetuada com sucesso!");
+                            }
+                            case 5 -> {
+                                String novoEndereco = Console.readLine("Informe o novo endereço: ");
+                                clienteService.alterarEndereco(id, novoEndereco);
+                                System.out.println('\n' + "Alteração de endereço efetuada com sucesso!");
                             }
                             default -> System.out.println('\n' + "Opção inválida!");
                         }
@@ -105,7 +114,16 @@ public class PrincipalCliente {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
-                case 6 -> continua = false;
+                case 6 -> {
+                    int id = Console.readInt("Informe o número do cliente que você deseja gerenciar faturas: ");
+                    try {
+                        Cliente cliente = clienteService.recuperarClientePorId(id);
+                        principalFatura.principal(cliente);
+                    } catch (EntidadeNaoEncontradaException e) {
+                        System.out.println('\n' + e.getMessage());
+                    }
+                }
+                case 7 -> continua = false;
 
                 default -> System.out.println('\n' + "Opção inválida!");
             }

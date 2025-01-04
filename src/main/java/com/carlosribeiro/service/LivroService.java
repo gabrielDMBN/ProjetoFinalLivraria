@@ -50,11 +50,12 @@ public class LivroService {
         if (livro == null) {
             throw new EntidadeNaoEncontradaException("Livro inexistente.");
         }
-        //if (livro.getItemDePedidos().isEmpty()) {
-        //  livroDAO.remover(livro.getId());
-        // else{....
-
+        if (!livro.getItemDePedidos().isEmpty()) {
+            System.out.println("Aviso: Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+            return livro;
+        }
         livroDAO.remover(livro.getId());
+        System.out.println("Livro removido com sucesso!");
         return livro;
     }
 

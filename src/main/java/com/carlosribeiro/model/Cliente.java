@@ -13,24 +13,33 @@ public class Cliente implements Serializable {
     private String nome;
     private String email;
     private String telefone;
+    private String endereco;
     private List<Pedido> pedidos;
+    private List<Fatura> faturas;
+    private int qtdFaturas; // New attribute
 
-    public Cliente(String cpf, String nome, String email, String telefone) {
+    public Cliente(String cpf, String nome, String email, String telefone, String endereco) {
         this.cpf = cpf;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
+        this.endereco = endereco;
         this.pedidos = new ArrayList<>();
+        this.faturas = new ArrayList<>();
+        this.qtdFaturas = 0;
     }
 
+    @Override
     public String toString() {
         return "ID = " + id +
                 "  CPF = " + cpf +
                 "  Nome = " + nome +
                 "  Email = " + email +
-                "  Telefone = " + telefone;
+                "  Telefone = " + telefone +
+                "  Endereço = " + endereco ;
     }
 
+    // Getters and setters for all attributes, including the new one
     public int getId() {
         return id;
     }
@@ -49,6 +58,10 @@ public class Cliente implements Serializable {
 
     public String getTelefone() {
         return telefone;
+    }
+
+    public String getEndereco() {
+        return endereco;
     }
 
     public void setId(int id) {
@@ -71,6 +84,10 @@ public class Cliente implements Serializable {
         this.telefone = telefone;
     }
 
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
     public List<Pedido> getPedidos() {
         return pedidos;
     }
@@ -79,4 +96,19 @@ public class Cliente implements Serializable {
         this.pedidos = pedidos;
     }
 
+    public List<Fatura> getFaturas() {
+        return faturas;
+    }
+
+    public void setFaturas(List<Fatura> faturas) {
+        this.faturas = faturas;
+    }
+
+    public int getQtdFaturas() {
+        return qtdFaturas;
+    }
+
+    public void setQtdFaturas(int qtdFaturas) {
+        this.qtdFaturas = qtdFaturas;
+    }
 }

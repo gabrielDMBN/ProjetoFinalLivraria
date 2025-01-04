@@ -4,6 +4,7 @@ import com.carlosribeiro.dao.ClienteDAO;
 import com.carlosribeiro.dao.PedidoDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
 import com.carlosribeiro.model.Cliente;
+import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
@@ -13,6 +14,7 @@ public class ClienteService {
 
     private final ClienteDAO clienteDAO = FabricaDeDaos.getDAO(ClienteDAO.class);
     private final PedidoDAO pedidoDAO = FabricaDeDaos.getDAO(PedidoDAO.class);
+    private final FaturaService faturaDAO = new FaturaService();
 
     public Cliente incluir(Cliente cliente) {
         return clienteDAO.incluir(cliente);
@@ -42,11 +44,21 @@ public class ClienteService {
         return cliente;
     }
 
+    public Cliente alterarEndereco(int id, String novoEndereco) {
+        Cliente cliente = recuperarClientePorId(id);
+        cliente.setEndereco(novoEndereco);
+        return cliente;
+    }
+
     public void remover(int id) {
         Cliente cliente = recuperarClientePorId(id);
         List<Pedido> pedidos = pedidoDAO.recuperarTodosOsPedidosDeUmCliente(id);
+        List<Fatura> faturas = faturaDAO.recuperarTodasAsFaturasDeUmCliente(id);
         if (!pedidos.isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Este cliente possui pedidos e não pode ser removido.");
+            throw new EntidadeNaoEncontradaException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
+        }
+        if (!faturas.isEmpty()) {
+            throw new EntidadeNaoEncontradaException("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
         }
         clienteDAO.remover(id);
     }
