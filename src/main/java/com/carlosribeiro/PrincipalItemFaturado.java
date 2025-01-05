@@ -38,11 +38,9 @@ public class PrincipalItemFaturado {
                             algumItemFaturado |= itemFaturadoService.faturarPedido(itemDePedido);
                         }
                         if (algumItemFaturado) {
-                            System.out.println("Pedido faturado com sucesso.");
+                            //System.out.println("Pedido faturado com sucesso.");
                         }
-//                        else {
-//                            System.out.println("Nenhum item foi faturado devido à falta de estoque.");
-//                        }
+//
                     } else {
                         System.out.println("Pedido não encontrado ou não pertence ao cliente.");
                     }

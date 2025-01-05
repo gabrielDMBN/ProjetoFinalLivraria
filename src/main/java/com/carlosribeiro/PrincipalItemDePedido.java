@@ -1,10 +1,10 @@
 package com.carlosribeiro;
 
+import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
 import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.Livro;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.service.ItemDePedidoService;
-import com.carlosribeiro.service.PedidoService;
 import corejava.Console;
 
 import java.util.List;
@@ -16,6 +16,8 @@ public class PrincipalItemDePedido {
 
     public void principal(Pedido pedido) {
         boolean continua = true;
+        boolean modificado = false;
+
         while (continua) {
             System.out.println('\n' + "========================================================");
             System.out.println('\n' + "Gerenciando itens de pedido para o pedido: " + pedido.getId());
@@ -23,7 +25,7 @@ public class PrincipalItemDePedido {
             System.out.println('\n' + "1. Adicionar item ao pedido");
             System.out.println("2. Listar itens do pedido");
             System.out.println("3. Remover item do pedido");
-            System.out.println("4. Voltar");
+            System.out.println("4. Voltar e enviar email");
 
             int opcao = Console.readInt('\n' + "Digite um número entre 1 e 4:");
 
@@ -54,8 +56,9 @@ public class PrincipalItemDePedido {
                             ItemDePedido itemDePedido = itemDePedidoService.incluirItemDePedido(pedido, livroSelecionado, quantidade);
                             pedido.getItensDePedido().add(itemDePedido);
                             System.out.println("Item adicionado ao pedido com sucesso!");
+                            modificado = true;
                             break;
-                        } catch (IllegalArgumentException e) {
+                        } catch (EntidadeNaoEncontradaException e) {
                             System.out.println(e.getMessage());
                         }
                     }
@@ -81,11 +84,25 @@ public class PrincipalItemDePedido {
                         itemDePedidoService.remover(itemId , pedido.getId());
                         pedido.getItensDePedido().removeIf(item -> item.getId() == itemId);
                         System.out.println("Item removido com sucesso!");
-                    } catch (IllegalArgumentException e) {
+                        modificado = true;
+                    } catch (EntidadeNaoEncontradaException e) {
                         System.out.println(e.getMessage());
                     }
                 }
-                case 4 -> continua = false;
+                case 4 -> {
+                    if (pedido.getItensDePedido().isEmpty()) {
+                        System.out.println("O pedido está vazio. Não é possível enviar o email.");
+                        continua = false;
+                    } else if (modificado == false) {
+                        System.out.println("O pedido não foi modificado. Não é necesário enviar o email.");
+                        continua = false;
+                    }
+                    else{
+                        PrincipalEnvioEmail envioEmail = new PrincipalEnvioEmail();
+                        envioEmail.enviarEmail(pedido.getCliente());
+                        continua = false;
+                    }
+                }
 
                 default -> System.out.println('\n' + "Opção inválida!");
             }

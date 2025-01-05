@@ -2,6 +2,7 @@ package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.LivroDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.ItemComDependenciasException;
 import com.carlosribeiro.model.Livro;
 import com.carlosribeiro.util.FabricaDeDaos;
 
@@ -51,8 +52,10 @@ public class LivroService {
             throw new EntidadeNaoEncontradaException("Livro inexistente.");
         }
         if (!livro.getItemDePedidos().isEmpty()) {
-            System.out.println("Aviso: Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
-            return livro;
+            throw new EntidadeNaoEncontradaException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+            //throw new ItemComDependenciasException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+//            System.out.println("Aviso: Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+//            return livro;
         }
         livroDAO.remover(livro.getId());
         System.out.println("Livro removido com sucesso!");

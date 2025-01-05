@@ -3,6 +3,7 @@ package com.carlosribeiro.service;
 import com.carlosribeiro.dao.ClienteDAO;
 import com.carlosribeiro.dao.PedidoDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.ClienteComDependenciasException;
 import com.carlosribeiro.model.Cliente;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.Pedido;
@@ -55,10 +56,12 @@ public class ClienteService {
         List<Pedido> pedidos = pedidoDAO.recuperarTodosOsPedidosDeUmCliente(id);
         List<Fatura> faturas = faturaDAO.recuperarTodasAsFaturasDeUmCliente(id);
         if (!pedidos.isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
+            //throw new ClienteComDependenciasException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
+            System.out.println("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
         }
         if (!faturas.isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
+            //throw new ClienteComDependenciasException("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
+            System.out.println("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
         }
         clienteDAO.remover(id);
     }

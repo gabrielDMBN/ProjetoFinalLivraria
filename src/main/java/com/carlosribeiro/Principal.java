@@ -2,6 +2,7 @@ package com.carlosribeiro;
 
 import com.carlosribeiro.dao.*;
 import com.carlosribeiro.model.*;
+import com.carlosribeiro.service.RelatorioService;
 import com.carlosribeiro.util.FabricaDeDaos;
 import corejava.Console;
 
@@ -10,9 +11,9 @@ import java.util.Map;
 
 public class Principal {
     public static void main(String[] args) {
-
         PrincipalCliente principalCliente = new PrincipalCliente();
         PrincipalLivro principalLivro = new PrincipalLivro();
+        PrincipalRelatorio principalRelatorio = new PrincipalRelatorio(new RelatorioService());
 
         recuperarDados();
 
@@ -22,20 +23,18 @@ public class Principal {
             System.out.println('\n' + "O que você deseja fazer?");
             System.out.println('\n' + "1. Tratar Clientes");
             System.out.println("2. Tratar Livros");
-            System.out.println("3. Sair");
+            System.out.println("3. Relatórios");
+            System.out.println("4. Sair");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 3:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 4:");
 
             System.out.println();
 
             switch (opcao) {
-                case 1 -> {
-                    principalCliente.principal();
-                }
-                case 2 -> {
-                    principalLivro.principal();
-                }
-                case 3 -> {
+                case 1 -> principalCliente.principal();
+                case 2 -> principalLivro.principal();
+                case 3 -> principalRelatorio.principal();
+                case 4 -> {
                     salvarDados();
                     continua = false;
                 }

@@ -21,7 +21,7 @@ public class FaturaService {
     public Fatura incluir(Fatura fatura) {
         fatura.setDataEmissao(LocalDate.now());
 
-        // Apply 5% discount if the customer has 4 or more non-canceled invoices
+        // aplica 5% de desconto quando tem 4 ou mais faturas nao canceladas na conta
         List<Fatura> faturasCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(fatura.getCliente().getId());
         long faturasNaoCanceladas = faturasCliente.stream()
                 .filter(f -> f.getDataCancelamento() == null)
@@ -59,14 +59,15 @@ public class FaturaService {
                 .filter(f -> f.getDataCancelamento() == null)
                 .count();
 
-        if (faturasNaoCanceladas < 1) {
+        //so permite cancelarr uma fatura se ele tiver mais d 3 faturas nao canceladas na conta
+        if (faturasNaoCanceladas < 3) {
             System.out.println("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
             return fatura;
         }
 
         fatura.setDataCancelamento(LocalDate.now());
 
-        // Remover itens faturados e devolver estoque
+        ////remover itens faturados e devolver estoque (ja realizado pelo remover de itens faturados!
         for (ItemFaturado item : fatura.getItensFaturados()) {
             itemFaturadoService.remover(item.getId());
         }
