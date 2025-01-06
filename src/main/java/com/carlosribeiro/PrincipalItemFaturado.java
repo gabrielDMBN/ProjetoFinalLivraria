@@ -35,9 +35,15 @@ public class PrincipalItemFaturado {
 
                     if (pedido != null && pedido.getCliente().getId() == clienteId) {
                         boolean algumItemFaturado = itemFaturadoService.faturarPedido(pedido);
-                        if (algumItemFaturado) {
+                        if (pedido.getStatus() == "Faturado") {
                             System.out.println("Pedido faturado com sucesso.");
                         }
+                        else if (pedido.getStatus() == "Parcialmente Faturado") {
+                            System.out.println("Pedido parcialmente faturado.");
+                        }
+//                        if (algumItemFaturado) {
+//                            System.out.println("Pedido faturado com sucesso.");
+//                        }
                     } else {
                         System.out.println("Pedido não encontrado ou não pertence ao cliente.");
                     }

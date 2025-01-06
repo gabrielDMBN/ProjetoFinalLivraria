@@ -51,7 +51,7 @@ public class ItemDePedidoService {
             for (Pedido pedido : pedidos) {
                 System.out.println("Pedido ID: " + pedido.getId() + " | Status: " + pedido.getStatus());
                 for (ItemDePedido item : pedido.getItensDePedido()) {
-                    System.out.println("  - Livro: " + item.getLivro().getTitulo() + " | Preço: " + item.getLivro().getPreco() + " | Quantidade: " + item.getQtdPedida());
+                    System.out.println("  - Livro: " + item.getLivro().getTitulo() + " | Quantidade Pedida: " + item.getQtdPedida() + " | Quantidade a Faturar: " + item.getQtdAFaturar());
                 }
                 System.out.println("----------------------------------------");
             }

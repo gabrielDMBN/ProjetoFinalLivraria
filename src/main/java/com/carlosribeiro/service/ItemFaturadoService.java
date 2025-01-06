@@ -93,7 +93,7 @@ public class ItemFaturadoService {
             }
 
         } else {
-            System.out.println("Nenhum item do pedido foi faturado.");
+            System.out.println("Nenhum item do pedido foi faturado. (falta de estoque)");
         }
 
         return algumItemFaturado;
