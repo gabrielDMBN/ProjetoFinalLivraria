@@ -2,10 +2,10 @@ package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.ItemFaturadoDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
-import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.ItemFaturado;
+import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
 import java.time.LocalDate;
@@ -48,15 +48,13 @@ public class ItemFaturadoService {
         return itemFaturadoDAO.recuperarItensFaturadosPorItemDePedido(itemDePedidoId);
     }
 
-    public boolean faturarPedido(ItemDePedido itemDePedido) {
+    public boolean faturarPedido(Pedido pedido) {
 
-        // checar status pra ver se pode faturar pela primeira vez ou novamenet
-        if ("Cancelado".equals(itemDePedido.getPedido().getStatus())) {
+        if ("Cancelado".equals(pedido.getStatus())) {
             System.out.println("O pedido está cancelado e não pode ser faturado.");
             return false;
         }
-        if ("Faturado".equals(itemDePedido.getPedido().getStatus())) {
-            //throw new StatusIndevidoException("O pedido já foi faturado.");
+        if ("Faturado".equals(pedido.getStatus())) {
             System.out.println("O pedido já foi faturado.");
             return false;
         }
@@ -66,8 +64,7 @@ public class ItemFaturadoService {
         List<ItemFaturado> itensFaturados = new ArrayList<>();
         double valorTotalFatura = 0;
 
-        // ffaturar todos os itens do pedido
-        for (ItemDePedido item : itemDePedido.getPedido().getItensDePedido()) {
+        for (ItemDePedido item : pedido.getItensDePedido()) {
             if (item.getQtdAFaturar() > 0) {
                 ItemFaturado itemFaturado = faturarItemDePedido(item);
                 if (itemFaturado != null) {
@@ -80,9 +77,8 @@ public class ItemFaturadoService {
             }
         }
 
-        // criar uma única fatura se algum item foi Faturado
         if (algumItemFaturado) {
-            Fatura fatura = new Fatura(LocalDate.now(), null, itemDePedido.getPedido().getCliente(), valorTotalFatura, 0);
+            Fatura fatura = new Fatura(LocalDate.now(), null, pedido.getCliente(), valorTotalFatura, 0);
             fatura.setItensFaturados(itensFaturados);
             faturaService.incluir(fatura);
 
@@ -90,20 +86,15 @@ public class ItemFaturadoService {
                 item.setFatura(fatura);
             }
 
-            // atualizar o status do pedido se todos os itens foram faturados
-            if (itemDePedido.getPedido().getItensDePedido().stream().allMatch(item -> item.getQtdAFaturar() == 0)) {
-                itemDePedido.getPedido().setStatus("Faturado");
-            }else {
-                itemDePedido.getPedido().setStatus("Parcialmente Faturado");
+            if (pedido.getItensDePedido().stream().allMatch(item -> item.getQtdAFaturar() == 0)) {
+                pedido.setStatus("Faturado");
+            } else {
+                pedido.setStatus("Parcialmente Faturado");
             }
 
-            System.out.println("Pedido faturado com sucesso!");
-        } else if (faltaEstoque) {
-           System.out.println("Algum item não foi faturado devido à falta de estoque.");
+        } else {
+            System.out.println("Nenhum item do pedido foi faturado.");
         }
-//        else {
-//          // System.out.println("Todos os itens do pedido já foram faturados.");
-//        }
 
         return algumItemFaturado;
     }
