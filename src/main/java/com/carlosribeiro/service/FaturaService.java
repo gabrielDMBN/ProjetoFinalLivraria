@@ -71,7 +71,7 @@ public class FaturaService {
         for (ItemFaturado item : fatura.getItensFaturados()) {
             itemFaturadoService.reestocar(item.getId());
         }
-        fatura.getItensFaturados().clear();
+       // fatura.getItensFaturados().clear();
 
         //System.out.println("Fatura cancelada com sucesso!");
         return fatura;

@@ -1,7 +1,5 @@
 package com.carlosribeiro.dao;
 
-import com.carlosribeiro.model.Lance;
-
 import java.util.List;
 import java.util.Map;
 

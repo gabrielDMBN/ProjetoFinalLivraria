@@ -40,7 +40,6 @@ public class ItemFaturadoService {
         }
         ItemDePedido itemDePedido = itemFaturado.getItemDePedido();
         itemDePedido.getLivro().setQtdEstoque(itemDePedido.getLivro().getQtdEstoque() + itemFaturado.getQtdFaturada());
-        itemDePedido.getItensFaturados().remove(itemFaturado);
 
 
     }
@@ -94,6 +93,8 @@ public class ItemFaturadoService {
             // atualizar o status do pedido se todos os itens foram faturados
             if (itemDePedido.getPedido().getItensDePedido().stream().allMatch(item -> item.getQtdAFaturar() == 0)) {
                 itemDePedido.getPedido().setStatus("Faturado");
+            }else {
+                itemDePedido.getPedido().setStatus("Parcialmente Faturado");
             }
 
             System.out.println("Pedido faturado com sucesso!");

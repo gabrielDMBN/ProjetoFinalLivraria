@@ -1,8 +1,6 @@
 package com.carlosribeiro.dao.impl;
 
 import com.carlosribeiro.dao.DAOGenerico;
-import com.carlosribeiro.dao.ProdutoDAO;
-import com.carlosribeiro.model.Produto;
 import com.carlosribeiro.util.Id;
 
 import java.lang.reflect.Field;

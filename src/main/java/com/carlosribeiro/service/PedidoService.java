@@ -33,6 +33,16 @@ public class PedidoService {
             //System.out.println("Este pedido já foi cancelado.");
             //return null;
         }
+        else if (pedido.getStatus().equals("Faturado")) {
+            throw new StatusIndevidoException("Este pedido já foi faturado.");
+            //System.out.println("Este pedido já foi faturado.");
+            //return null;
+        }
+        else if (pedido.getStatus().equals("Parcialmente Faturado")) {
+            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado.");
+            //System.out.println("Este pedido já foi faturado.");
+            //return null;
+        }
         pedido.setDataCancelamento(LocalDate.now().toString());
         pedido.setStatus("Cancelado");
         return pedido;
