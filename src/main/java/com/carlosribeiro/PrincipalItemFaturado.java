@@ -34,14 +34,16 @@ public class PrincipalItemFaturado {
                     Pedido pedido = pedidoService.recuperarPedidoPorId(pedidoId);
 
                     if (pedido != null && pedido.getCliente().getId() == clienteId) {
-                        boolean algumItemFaturado = false;
-                        for (ItemDePedido itemDePedido : pedido.getItensDePedido()) {
-                            algumItemFaturado |= itemFaturadoService.faturarPedido(itemDePedido);
+                        boolean algumItemFaturado = itemFaturadoService.faturarPedido(pedido);
+                        if (pedido.getStatus() == "Faturado") {
+                            System.out.println("Pedido faturado com sucesso.");
                         }
-                        if (algumItemFaturado) {
-                            //System.out.println("Pedido faturado com sucesso.");//////////////////////////////////////
+                        else if (pedido.getStatus() == "Parcialmente Faturado") {
+                            System.out.println("Pedido parcialmente faturado.");
                         }
-//
+//                        if (algumItemFaturado) {
+//                            System.out.println("Pedido faturado com sucesso.");
+//                        }
                     } else {
                         System.out.println("Pedido não encontrado ou não pertence ao cliente.");
                     }
