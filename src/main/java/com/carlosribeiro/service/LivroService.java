@@ -52,8 +52,8 @@ public class LivroService {
             throw new EntidadeNaoEncontradaException("Livro inexistente.");
         }
         if (!livro.getItemDePedidos().isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
-            //throw new ItemComDependenciasException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+            //throw new EntidadeNaoEncontradaException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
+            throw new ItemComDependenciasException("Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
 //            System.out.println("Aviso: Não é possível remover o livro pois ele está associado a um ou mais itens de pedido.");
 //            return livro;
         }

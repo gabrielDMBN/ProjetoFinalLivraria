@@ -61,7 +61,7 @@ public class PrincipalFatura {
                     int faturaId = Console.readInt("Informe o ID da fatura que deseja cancelar: ");
                     try {
                         faturaService.cancelarFatura(faturaId, cliente.getId());
-                        //System.out.println("Fatura cancelada com sucesso!");
+                        System.out.println("Fatura cancelada com sucesso!");
                     } catch (EntidadeNaoEncontradaException e) {
                         System.out.println("Erro ao cancelar a fatura: " + e.getMessage());
                     }

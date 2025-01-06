@@ -33,6 +33,18 @@ public class ItemFaturadoService {
         itemFaturadoDAO.remover(itemFaturadoId);
     }
 
+    public void reestocar(int itemFaturadoId){
+        ItemFaturado itemFaturado = itemFaturadoDAO.recuperarPorId(itemFaturadoId);
+        if (itemFaturado == null) {
+            throw new EntidadeNaoEncontradaException("ItemFaturado inexistente.");
+        }
+        ItemDePedido itemDePedido = itemFaturado.getItemDePedido();
+        itemDePedido.getLivro().setQtdEstoque(itemDePedido.getLivro().getQtdEstoque() + itemFaturado.getQtdFaturada());
+        itemDePedido.getItensFaturados().remove(itemFaturado);
+
+
+    }
+
     public List<ItemFaturado> recuperarItensFaturadosPorItemDePedido(int itemDePedidoId) {
         return itemFaturadoDAO.recuperarItensFaturadosPorItemDePedido(itemDePedidoId);
     }
@@ -41,7 +53,6 @@ public class ItemFaturadoService {
 
         // checar status pra ver se pode faturar pela primeira vez ou novamenet
         if ("Cancelado".equals(itemDePedido.getPedido().getStatus())) {
-            //throw new StatusIndevidoException("O pedido está cancelado e não pode ser faturado.");
             System.out.println("O pedido está cancelado e não pode ser faturado.");
             return false;
         }

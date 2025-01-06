@@ -5,6 +5,7 @@ import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.service.ItemDePedidoService;
 import com.carlosribeiro.service.ItemFaturadoService;
 import com.carlosribeiro.service.PedidoService;
+import com.carlosribeiro.exception.StatusIndevidoException;
 
 import java.util.Scanner;
 
@@ -38,7 +39,7 @@ public class PrincipalItemFaturado {
                             algumItemFaturado |= itemFaturadoService.faturarPedido(itemDePedido);
                         }
                         if (algumItemFaturado) {
-                            //System.out.println("Pedido faturado com sucesso.");
+                            //System.out.println("Pedido faturado com sucesso.");//////////////////////////////////////
                         }
 //
                     } else {

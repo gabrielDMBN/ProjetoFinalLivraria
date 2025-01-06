@@ -60,20 +60,20 @@ public class FaturaService {
                 .count();
 
         //so permite cancelarr uma fatura se ele tiver mais d 3 faturas nao canceladas na conta
-        if (faturasNaoCanceladas < 3) {
+        if (faturasNaoCanceladas < 1) {
             System.out.println("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
             return fatura;
         }
 
         fatura.setDataCancelamento(LocalDate.now());
 
-        ////remover itens faturados e devolver estoque (ja realizado pelo remover de itens faturados!
+        ////devolver estoque (ja realizado pelo reestocar de itens faturados!
         for (ItemFaturado item : fatura.getItensFaturados()) {
-            itemFaturadoService.remover(item.getId());
+            itemFaturadoService.reestocar(item.getId());
         }
         fatura.getItensFaturados().clear();
 
-        System.out.println("Fatura cancelada com sucesso!");
+        //System.out.println("Fatura cancelada com sucesso!");
         return fatura;
     }
 
@@ -88,9 +88,16 @@ public class FaturaService {
             return;
         }
 
-        if (!fatura.getItensFaturados().isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Esta fatura possui itens faturados e não pode ser removida.");
+        if (fatura.getDataCancelamento() != null) {
+            System.out.println("Não é possível remover a fatura. A fatura já está cancelada.");
+            return;
         }
+
+        // Remover itens faturados e devolver estoque
+        for (ItemFaturado item : fatura.getItensFaturados()) {
+            itemFaturadoService.remover(item.getId());
+        }
+        fatura.getItensFaturados().clear();
 
         faturaDAO.remover(fatura.getId());
         System.out.println("Fatura removida com sucesso.");

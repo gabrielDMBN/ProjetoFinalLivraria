@@ -56,12 +56,12 @@ public class ClienteService {
         List<Pedido> pedidos = pedidoDAO.recuperarTodosOsPedidosDeUmCliente(id);
         List<Fatura> faturas = faturaDAO.recuperarTodasAsFaturasDeUmCliente(id);
         if (!pedidos.isEmpty()) {
-            //throw new ClienteComDependenciasException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
-            System.out.println("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
+            throw new ClienteComDependenciasException("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
+            //System.out.println("Este cliente possui " + pedidos.size() + " pedidos e não pode ser removido.");
         }
         if (!faturas.isEmpty()) {
-            //throw new ClienteComDependenciasException("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
-            System.out.println("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
+            throw new ClienteComDependenciasException("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
+            //System.out.println("Este cliente possui " + faturas.size() + " faturas e não pode ser removido.");
         }
         clienteDAO.remover(id);
     }

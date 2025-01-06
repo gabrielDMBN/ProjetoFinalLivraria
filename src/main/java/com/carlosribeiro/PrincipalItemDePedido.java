@@ -1,6 +1,8 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.TentativaAcessoIndevidoException;
+import com.carlosribeiro.exception.ItemComDependenciasException;
 import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.Livro;
 import com.carlosribeiro.model.Pedido;
@@ -58,7 +60,7 @@ public class PrincipalItemDePedido {
                             System.out.println("Item adicionado ao pedido com sucesso!");
                             modificado = true;
                             break;
-                        } catch (EntidadeNaoEncontradaException e) {
+                        } catch (EntidadeNaoEncontradaException | TentativaAcessoIndevidoException | ItemComDependenciasException e) {
                             System.out.println(e.getMessage());
                         }
                     }
@@ -85,16 +87,16 @@ public class PrincipalItemDePedido {
                         pedido.getItensDePedido().removeIf(item -> item.getId() == itemId);
                         System.out.println("Item removido com sucesso!");
                         modificado = true;
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | TentativaAcessoIndevidoException | ItemComDependenciasException e) {
                         System.out.println(e.getMessage());
                     }
                 }
                 case 4 -> {
                     if (pedido.getItensDePedido().isEmpty()) {
-                        System.out.println("O pedido está vazio. Não é possível enviar o email.");
+                        System.out.println("O pedido está vazio. Não é necessário enviar o email.");
                         continua = false;
                     } else if (modificado == false) {
-                        System.out.println("O pedido não foi modificado. Não é necesário enviar o email.");
+                        System.out.println("O pedido não foi modificado. Não é necessário enviar o email.");
                         continua = false;
                     }
                     else{

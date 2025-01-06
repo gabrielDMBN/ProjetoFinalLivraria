@@ -31,12 +31,12 @@ public class ItemDePedidoService {
             throw new EntidadeNaoEncontradaException("Item de pedido não encontrado.");
         }
         if (itemDePedido.getPedido().getId() != pedidoId) {
-            //throw new TentativaAcessoIndevidoException("O item de pedido não pertence ao pedido informado.");
-            System.out.println("O item de pedido não pertence ao pedido informado.");
+            throw new TentativaAcessoIndevidoException("O item de pedido não pertence ao pedido informado.");
+            //System.out.println("O item de pedido não pertence ao pedido informado.");
         }
         if (!itemDePedido.getItensFaturados().isEmpty()) {
-            //throw new ItemComDependenciasException("Não é possível remover um item de pedido que já foi faturado.");
-            System.out.println("Não é possível remover um item de pedido que já foi faturado.");
+            throw new ItemComDependenciasException("Não é possível remover um item de pedido que já foi faturado.");
+            //System.out.println("Não é possível remover um item de pedido que já foi faturado.");
         }
         itemDePedidoDAO.remover(itemDePedidoId);
         itemDePedido.getLivro().getItemDePedidos().remove(itemDePedido); // Remove from the list in Livro
