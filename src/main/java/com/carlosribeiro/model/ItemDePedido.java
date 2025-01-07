@@ -27,6 +27,7 @@ public class ItemDePedido implements Serializable {
         this.itensFaturados = new ArrayList<>();
     }
 
+    @Override ////////////////////////////////////////////////
     public String toString() {
         return "ID = " + id +
                 "  Quantidade Pedida = " + qtdPedida +

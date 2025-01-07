@@ -1,10 +1,18 @@
 package com.carlosribeiro;
 
+import com.carlosribeiro.dao.LivroDAO;
+import com.carlosribeiro.model.Livro;
 import com.carlosribeiro.service.RelatorioService;
+import com.carlosribeiro.service.ItemFaturadoService;
 import corejava.Console;
 
+import java.util.List;
+
 public class PrincipalRelatorio {
+
     private final RelatorioService relatorioService;
+    private final ItemFaturadoService itemFaturadoService = new ItemFaturadoService();
+   // private final LivroDAO livroDAO = new LivroDAO();
 
     public PrincipalRelatorio(RelatorioService relatorioService) {
         this.relatorioService = relatorioService;
@@ -26,11 +34,21 @@ public class PrincipalRelatorio {
 
             switch (opcao) {
                 case 1 -> {
+//                    List<Livro> livros = livroDAO.recuperarTodos();
+//                    System.out.println("Livros cadastrados:");
+//                    for (Livro livro : livros) {
+//                        System.out.println("ID: " + livro.getId() + ", Título: " + livro.getTitulo() + ", Descrição: " + livro.getDescricao());
+//                    }
                     int livroId = Console.readInt("Informe o ID do livro: ");
                     int mes = Console.readInt("Informe o mês: ");
                     int ano = Console.readInt("Informe o ano: ");
                     var itens = relatorioService.getItensFaturadosPorLivroEMes(livroId, mes, ano);
-                   // itens.forEach(item -> System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdFaturada() + " | Data: " + item.getDataFatura()));
+                    System.out.println("Itens faturados no mês " + mes + " do ano " + ano + ":");
+                    if (itens.isEmpty()) {
+                        System.out.println("Nenhum item faturado encontrado.");
+                    } else {
+                        itens.forEach(item -> System.out.println("- " + itemFaturadoService.relatorioUmResumo(item)));
+                    }
                 }
                 case 2 -> {
                     var livros = relatorioService.getLivrosNuncaFaturados();
@@ -44,10 +62,9 @@ public class PrincipalRelatorio {
                     System.out.println("Livros faturados no mês " + mes + " do ano " + ano + ":");
                     if (itens.isEmpty()) {
                         System.out.println("Nenhum livro faturado encontrado.");
-                    }else {
+                    } else {
                         relatorioService.consolidarItensPorNome(itens);
                     }
-
                 }
                 case 4 -> continua = false;
                 default -> System.out.println('\n' + "Opção inválida!");

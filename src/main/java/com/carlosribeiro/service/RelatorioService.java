@@ -26,8 +26,27 @@ public class RelatorioService {
         this.faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
     }
 
-    public List<ItemDePedido> getItensFaturadosPorLivroEMes(int livroId, int mes, int ano) {
-       return null;
+    public List<ItemFaturado> getItensFaturadosPorLivroEMes(int livroId, int mes, int ano) {
+        List<ItemFaturado> itensFaturadosNoMesEAno = new ArrayList<>();
+        List<Cliente> todosClientes = clienteDAO.recuperarTodos();
+
+        for (Cliente cliente : todosClientes) {
+            List<Fatura> faturasDoCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(cliente.getId());
+
+            for (Fatura fatura : faturasDoCliente) {
+                LocalDate dataFatura = fatura.getDataEmissao();
+                if (dataFatura.getMonthValue() == mes && dataFatura.getYear() == ano) {
+                    for (ItemFaturado itemFaturado : fatura.getItensFaturados()) {
+                        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemFaturado.getItemDePedido().getId());
+                        if (itemDePedido.getLivro().getId() == livroId) {
+                            itensFaturadosNoMesEAno.add(itemFaturado);
+                        }
+                    }
+                }
+            }
+        }
+
+        return itensFaturadosNoMesEAno;
     }
 
     //esse metodo retorna os livros e litra quais tem a lista ItemDePedido com listas vazias de ItemFaturado
@@ -54,6 +73,7 @@ public class RelatorioService {
         return livrosNuncaFaturados;
     }
 
+    //esse metodo retorna os itens de pedido que foram faturados em um determinado mes e ano
     public List<ItemDePedido> getLivrosFaturadosPorMesEAno(int mes, int ano) {
         List<ItemDePedido> itensFaturadosNoMesEAno = new ArrayList<>();
         List<Cliente> todosClientes = clienteDAO.recuperarTodos();
