@@ -1,22 +1,29 @@
 package com.carlosribeiro.service;
 
-import com.carlosribeiro.model.ItemDePedido;
-import com.carlosribeiro.model.Livro;
+import com.carlosribeiro.dao.ClienteDAO;
+import com.carlosribeiro.dao.FaturaDAO;
 import com.carlosribeiro.dao.ItemDePedidoDAO;
 import com.carlosribeiro.dao.LivroDAO;
+import com.carlosribeiro.model.*;
 import com.carlosribeiro.util.FabricaDeDaos;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class RelatorioService {
     private final ItemDePedidoDAO itemDePedidoDAO;
     private final LivroDAO livroDAO;
+    private final ClienteDAO clienteDAO;
+    private final FaturaDAO faturaDAO;
 
     public RelatorioService() {
         this.itemDePedidoDAO = FabricaDeDaos.getDAO(ItemDePedidoDAO.class);
         this.livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
+        this.clienteDAO = FabricaDeDaos.getDAO(ClienteDAO.class);
+        this.faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
     }
 
     public List<ItemDePedido> getItensFaturadosPorLivroEMes(int livroId, int mes, int ano) {
@@ -48,6 +55,38 @@ public class RelatorioService {
     }
 
     public List<ItemDePedido> getLivrosFaturadosPorMesEAno(int mes, int ano) {
-      return null;
+        List<ItemDePedido> itensFaturadosNoMesEAno = new ArrayList<>();
+        List<Cliente> todosClientes = clienteDAO.recuperarTodos();
+
+        for (Cliente cliente : todosClientes) {
+            List<Fatura> faturasDoCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(cliente.getId());
+
+            for (Fatura fatura : faturasDoCliente) {
+                LocalDate dataFatura = fatura.getDataEmissao();
+                if (dataFatura.getMonthValue() == mes && dataFatura.getYear() == ano) {
+                    for (ItemFaturado itemFaturado : fatura.getItensFaturados()) {
+                        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemFaturado.getItemDePedido().getId());
+                        itensFaturadosNoMesEAno.add(itemDePedido);
+                    }
+                }
+            }
+        }
+
+        return itensFaturadosNoMesEAno;
     }
+
+    public void consolidarItensPorNome(List<ItemDePedido> itens) {
+        Map<String, Integer> consolidado = new HashMap<>();
+
+        for (ItemDePedido item : itens) {
+            String nomeLivro = item.getLivro().getTitulo();
+            int quantidade = item.getQtdPedida() - item.getQtdAFaturar();
+
+            consolidado.put(nomeLivro, consolidado.getOrDefault(nomeLivro, 0) + quantidade);
+        }
+
+        consolidado.forEach((nome, quantidade) -> System.out.println("Produto: " + nome + " | Quantidade: " + quantidade));
+    }
+
+
 }

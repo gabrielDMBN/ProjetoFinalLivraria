@@ -41,7 +41,13 @@ public class PrincipalRelatorio {
                     int mes = Console.readInt("Informe o mês: ");
                     int ano = Console.readInt("Informe o ano: ");
                     var itens = relatorioService.getLivrosFaturadosPorMesEAno(mes, ano);
-                   // itens.forEach(item -> System.out.println("Produto: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdFaturada()));
+                    System.out.println("Livros faturados no mês " + mes + " do ano " + ano + ":");
+                    if (itens.isEmpty()) {
+                        System.out.println("Nenhum livro faturado encontrado.");
+                    }else {
+                        relatorioService.consolidarItensPorNome(itens);
+                    }
+
                 }
                 case 4 -> continua = false;
                 default -> System.out.println('\n' + "Opção inválida!");
