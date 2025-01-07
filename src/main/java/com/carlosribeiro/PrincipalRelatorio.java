@@ -1,7 +1,7 @@
 package com.carlosribeiro;
 
-import com.carlosribeiro.dao.LivroDAO;
 import com.carlosribeiro.model.Livro;
+import com.carlosribeiro.service.LivroService;
 import com.carlosribeiro.service.RelatorioService;
 import com.carlosribeiro.service.ItemFaturadoService;
 import corejava.Console;
@@ -12,7 +12,7 @@ public class PrincipalRelatorio {
 
     private final RelatorioService relatorioService;
     private final ItemFaturadoService itemFaturadoService = new ItemFaturadoService();
-   // private final LivroDAO livroDAO = new LivroDAO();
+    private final LivroService livroService = new LivroService();
 
     public PrincipalRelatorio(RelatorioService relatorioService) {
         this.relatorioService = relatorioService;
@@ -34,11 +34,11 @@ public class PrincipalRelatorio {
 
             switch (opcao) {
                 case 1 -> {
-//                    List<Livro> livros = livroDAO.recuperarTodos();
-//                    System.out.println("Livros cadastrados:");
-//                    for (Livro livro : livros) {
-//                        System.out.println("ID: " + livro.getId() + ", Título: " + livro.getTitulo() + ", Descrição: " + livro.getDescricao());
-//                    }
+                    List<Livro> livros = livroService.recuperarLivros();
+                    System.out.println("Livros cadastrados:");
+                    for (Livro livro : livros) {
+                        System.out.println("ID: " + livro.getId() + ", Título: " + livro.getTitulo() + ", Descrição: " + livro.getDescricao());
+                    }
                     int livroId = Console.readInt("Informe o ID do livro: ");
                     int mes = Console.readInt("Informe o mês: ");
                     int ano = Console.readInt("Informe o ano: ");

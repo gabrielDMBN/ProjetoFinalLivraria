@@ -60,7 +60,7 @@ public class FaturaService {
                 .count();
 
         //so permite cancelarr uma fatura se ele tiver mais d 3 faturas nao canceladas na conta
-        if (faturasNaoCanceladas < 1) {
+        if (faturasNaoCanceladas < 3) {
             System.out.println("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
             return fatura;
         }
