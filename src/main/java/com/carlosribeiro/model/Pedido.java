@@ -14,7 +14,7 @@ public class Pedido implements Serializable {
     private String dataCancelamento;
     private String status;
     private Cliente cliente;
-    private String enderecoEntrega; // New attribute
+    private String enderecoEntrega;
     private List<ItemDePedido> itensDePedido;
 
     public Pedido(LocalDate dataEmissao, String dataCancelamento, String status, Cliente cliente, String enderecoEntrega) {
@@ -22,7 +22,7 @@ public class Pedido implements Serializable {
         this.dataCancelamento = dataCancelamento;
         this.status = status;
         this.cliente = cliente;
-        this.enderecoEntrega = enderecoEntrega; // Initialize new attribute
+        this.enderecoEntrega = enderecoEntrega;
         this.itensDePedido = new ArrayList<>();
     }
 
@@ -32,10 +32,10 @@ public class Pedido implements Serializable {
                 "  Data de Emissão = " + dataEmissao +
                 "  Data de Cancelamento = " + dataCancelamento +
                 "  Status = " + status +
-                "  Endereço de Entrega = " + enderecoEntrega; // Include new attribute in toString
+                "  Endereço de Entrega = " + enderecoEntrega;
     }
 
-    // Getters and setters for all attributes, including the new one
+
     public int getId() {
         return id;
     }

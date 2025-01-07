@@ -1,6 +1,7 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.model.Cliente;
+import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemFaturado;
 import com.carlosribeiro.service.FaturaService;
@@ -12,6 +13,7 @@ import java.util.Scanner;
 public class PrincipalFatura {
 
     private static final FaturaService faturaService = new FaturaService();
+
 
     public static void principal(Cliente cliente) {
         Scanner scanner = new Scanner(System.in);
@@ -40,6 +42,7 @@ public class PrincipalFatura {
                         for (Fatura fatura : faturas) {
                             System.out.println("-----------------------------");
                             System.out.println("Fatura ID: " + fatura.getId());
+                           // System.out.println("Pedido ID: " + fatura.getPedido().getId());
                             System.out.println("Data de Emissão: " + fatura.getDataEmissao());
                             System.out.println("Data de Cancelamento: " + fatura.getDataCancelamento());
                             System.out.println("Valor Total: " + fatura.getValorTotalFatura());
@@ -58,8 +61,8 @@ public class PrincipalFatura {
                     int faturaId = Console.readInt("Informe o ID da fatura que deseja cancelar: ");
                     try {
                         faturaService.cancelarFatura(faturaId, cliente.getId());
-                        //System.out.println("Fatura cancelada com sucesso!");
-                    } catch (Exception e) {
+                        System.out.println("Fatura cancelada com sucesso!");
+                    } catch (EntidadeNaoEncontradaException e) {
                         System.out.println("Erro ao cancelar a fatura: " + e.getMessage());
                     }
                 }
@@ -68,7 +71,7 @@ public class PrincipalFatura {
                     try {
                         faturaService.remover(faturaId, cliente.getId());
                        // System.out.println("Fatura removida com sucesso!");
-                    } catch (Exception e) {
+                    } catch (EntidadeNaoEncontradaException e) {
                         System.out.println("Erro ao remover a fatura: " + e.getMessage());
                     }
                 }

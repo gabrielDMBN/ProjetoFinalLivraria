@@ -1,6 +1,7 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.ClienteComDependenciasException;
 import com.carlosribeiro.model.Cliente;
 import com.carlosribeiro.service.ClienteService;
 import corejava.Console;
@@ -85,7 +86,7 @@ public class PrincipalCliente {
                             }
                             default -> System.out.println('\n' + "Opção inválida!");
                         }
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ClienteComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
@@ -95,7 +96,7 @@ public class PrincipalCliente {
                     try {
                         clienteService.remover(id);
                         System.out.println('\n' + "Cliente removido com sucesso!");
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ClienteComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
@@ -110,7 +111,7 @@ public class PrincipalCliente {
                     try {
                         Cliente cliente = clienteService.recuperarClientePorId(id);
                         principalPedido.principal(cliente);
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ClienteComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
@@ -119,7 +120,7 @@ public class PrincipalCliente {
                     try {
                         Cliente cliente = clienteService.recuperarClientePorId(id);
                         principalFatura.principal(cliente);
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ClienteComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }

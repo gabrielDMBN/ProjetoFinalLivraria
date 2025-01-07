@@ -1,7 +1,10 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.ItemComDependenciasException;
+
 import com.carlosribeiro.model.Livro;
+import com.carlosribeiro.service.ItemDePedidoService;
 import com.carlosribeiro.service.LivroService;
 import corejava.Console;
 
@@ -81,7 +84,7 @@ public class PrincipalLivro {
                             }
                             default -> System.out.println('\n' + "Opção inválida!");
                         }
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ItemComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
@@ -90,7 +93,7 @@ public class PrincipalLivro {
 
                     try {
                         livroService.remover(id);
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | ItemComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }

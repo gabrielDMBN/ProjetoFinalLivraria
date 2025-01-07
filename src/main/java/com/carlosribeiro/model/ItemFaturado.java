@@ -18,9 +18,9 @@ public class ItemFaturado implements Serializable {
 
     }
 
+    //utilizado apenas no relatorio
     public String toString() {
-        return "ID = " + id +
-                "  Quantidade Faturada = " + qtdFaturada;
+        return "ID: " + id + " Quantidade faturada: " + qtdFaturada + " Item de pedido: " + itemDePedido.getId() + " Fatura: " + fatura.getId();
     }
 
     public int getId() {

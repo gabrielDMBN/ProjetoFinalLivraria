@@ -21,7 +21,7 @@ public class FaturaService {
     public Fatura incluir(Fatura fatura) {
         fatura.setDataEmissao(LocalDate.now());
 
-        // Apply 5% discount if the customer has 4 or more non-canceled invoices
+        // aplica 5% de desconto quando tem 4 ou mais faturas nao canceladas na conta
         List<Fatura> faturasCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(fatura.getCliente().getId());
         long faturasNaoCanceladas = faturasCliente.stream()
                 .filter(f -> f.getDataCancelamento() == null)
@@ -59,20 +59,21 @@ public class FaturaService {
                 .filter(f -> f.getDataCancelamento() == null)
                 .count();
 
-        if (faturasNaoCanceladas < 1) {
+        //so permite cancelarr uma fatura se ele tiver mais d 3 faturas nao canceladas na conta
+        if (faturasNaoCanceladas < 3) {
             System.out.println("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
             return fatura;
         }
 
         fatura.setDataCancelamento(LocalDate.now());
 
-        // Remover itens faturados e devolver estoque
+        ////devolver estoque (ja realizado pelo reestocar de itens faturados!
         for (ItemFaturado item : fatura.getItensFaturados()) {
-            itemFaturadoService.remover(item.getId());
+            itemFaturadoService.reestocar(item.getId());
         }
-        fatura.getItensFaturados().clear();
+       // fatura.getItensFaturados().clear();
 
-        System.out.println("Fatura cancelada com sucesso!");
+        //System.out.println("Fatura cancelada com sucesso!");
         return fatura;
     }
 
@@ -87,9 +88,16 @@ public class FaturaService {
             return;
         }
 
-        if (!fatura.getItensFaturados().isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Esta fatura possui itens faturados e não pode ser removida.");
+        if (fatura.getDataCancelamento() != null) {
+            System.out.println("Não é possível remover a fatura. A fatura já está cancelada.");
+            return;
         }
+
+        // Remover itens faturados e devolver estoque
+        for (ItemFaturado item : fatura.getItensFaturados()) {
+            itemFaturadoService.remover(item.getId());
+        }
+        fatura.getItensFaturados().clear();
 
         faturaDAO.remover(fatura.getId());
         System.out.println("Fatura removida com sucesso.");

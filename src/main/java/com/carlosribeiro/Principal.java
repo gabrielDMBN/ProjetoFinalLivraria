@@ -2,6 +2,7 @@ package com.carlosribeiro;
 
 import com.carlosribeiro.dao.*;
 import com.carlosribeiro.model.*;
+import com.carlosribeiro.service.RelatorioService;
 import com.carlosribeiro.util.FabricaDeDaos;
 import corejava.Console;
 
@@ -10,11 +11,11 @@ import java.util.Map;
 
 public class Principal {
     public static void main(String[] args) {
-
         PrincipalCliente principalCliente = new PrincipalCliente();
         PrincipalLivro principalLivro = new PrincipalLivro();
+        PrincipalRelatorio principalRelatorio = new PrincipalRelatorio(new RelatorioService());
 
-        recuperarDados();
+       recuperarDados();
 
         boolean continua = true;
         while (continua) {
@@ -22,20 +23,18 @@ public class Principal {
             System.out.println('\n' + "O que você deseja fazer?");
             System.out.println('\n' + "1. Tratar Clientes");
             System.out.println("2. Tratar Livros");
-            System.out.println("3. Sair");
+            System.out.println("3. Tratar Relatórios");
+            System.out.println("4. Sair");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 3:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 4:");
 
             System.out.println();
 
             switch (opcao) {
-                case 1 -> {
-                    principalCliente.principal();
-                }
-                case 2 -> {
-                    principalLivro.principal();
-                }
-                case 3 -> {
+                case 1 -> principalCliente.principal();
+                case 2 -> principalLivro.principal();
+                case 3 -> principalRelatorio.principal();
+                case 4 -> {
                     salvarDados();
                     continua = false;
                 }
@@ -45,8 +44,6 @@ public class Principal {
     }
 
     private static void salvarDados() {
-        ProdutoDAO produtoDAO = FabricaDeDaos.getDAO(ProdutoDAO.class);
-        LanceDAO lanceDAO = FabricaDeDaos.getDAO(LanceDAO.class);
         ClienteDAO clienteDAO = FabricaDeDaos.getDAO(ClienteDAO.class);
         PedidoDAO pedidoDAO = FabricaDeDaos.getDAO(PedidoDAO.class);
         LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
@@ -54,10 +51,6 @@ public class Principal {
         ItemFaturadoDAO itemFaturadoDAO = FabricaDeDaos.getDAO(ItemFaturadoDAO.class);
         FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
 
-        Map<Integer, Produto> mapDeProdutos = produtoDAO.getMap();
-        int contadorProdutos = produtoDAO.getContador();
-        Map<Integer, Lance> mapDeLances = lanceDAO.getMap();
-        int contadorLances = lanceDAO.getContador();
         Map<Integer, Cliente> mapDeClientes = clienteDAO.getMap();
         int contadorClientes = clienteDAO.getContador();
         Map<Integer, Pedido> mapDePedidos = pedidoDAO.getMap();
@@ -74,10 +67,6 @@ public class Principal {
         try {
             FileOutputStream fos = new FileOutputStream("arquivo.dat");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(mapDeProdutos);
-            oos.writeInt(contadorProdutos);
-            oos.writeObject(mapDeLances);
-            oos.writeInt(contadorLances);
             oos.writeObject(mapDeClientes);
             oos.writeInt(contadorClientes);
             oos.writeObject(mapDePedidos);
@@ -101,10 +90,6 @@ public class Principal {
             FileInputStream fis = new FileInputStream("arquivo.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            Map<Integer, Produto> mapDeProdutos = (Map<Integer, Produto>) ois.readObject();
-            int contadorProdutos = ois.readInt();
-            Map<Integer, Lance> mapDeLances = (Map<Integer, Lance>) ois.readObject();
-            int contadorLances = ois.readInt();
             Map<Integer, Cliente> mapDeClientes = (Map<Integer, Cliente>) ois.readObject();
             int contadorClientes = ois.readInt();
             Map<Integer, Pedido> mapDePedidos = (Map<Integer, Pedido>) ois.readObject();
@@ -118,8 +103,6 @@ public class Principal {
             Map<Integer, Fatura> mapDeFaturas = (Map<Integer, Fatura>) ois.readObject();
             int contadorFaturas = ois.readInt();
 
-            ProdutoDAO produtoDAO = FabricaDeDaos.getDAO(ProdutoDAO.class);
-            LanceDAO lanceDAO = FabricaDeDaos.getDAO(LanceDAO.class);
             ClienteDAO clienteDAO = FabricaDeDaos.getDAO(ClienteDAO.class);
             PedidoDAO pedidoDAO = FabricaDeDaos.getDAO(PedidoDAO.class);
             LivroDAO livroDAO = FabricaDeDaos.getDAO(LivroDAO.class);
@@ -127,10 +110,6 @@ public class Principal {
             ItemFaturadoDAO itemFaturadoDAO = FabricaDeDaos.getDAO(ItemFaturadoDAO.class);
             FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
 
-            produtoDAO.setMap(mapDeProdutos);
-            produtoDAO.setContador(contadorProdutos);
-            lanceDAO.setMap(mapDeLances);
-            lanceDAO.setContador(contadorLances);
             clienteDAO.setMap(mapDeClientes);
             clienteDAO.setContador(contadorClientes);
             pedidoDAO.setMap(mapDePedidos);

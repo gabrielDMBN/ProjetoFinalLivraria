@@ -1,10 +1,11 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.TentativaAcessoIndevidoException;
+import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Cliente;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.service.PedidoService;
-import com.carlosribeiro.service.ItemDePedidoService;
 import corejava.Console;
 
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class PrincipalPedido {
                     try {
                         pedidoService.cancelarPedido(id, cliente.getId());
                         System.out.println('\n' + "Pedido cancelado com sucesso!");
-                    } catch (EntidadeNaoEncontradaException e) {
+                    } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e ) {
                         System.out.println('\n' + e.getMessage());
                     }
                 }
@@ -83,7 +84,7 @@ public class PrincipalPedido {
                                 pedidoService.remover(pedido.getId());
                                 System.out.println("Pedido removido pois não possui itens.");
                             }
-                        } catch (EntidadeNaoEncontradaException | IllegalArgumentException e) {
+                        } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
                             System.out.println(e.getMessage());
                         }
                     }

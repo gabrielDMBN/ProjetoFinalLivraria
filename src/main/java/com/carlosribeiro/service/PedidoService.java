@@ -2,6 +2,8 @@ package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.PedidoDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.TentativaAcessoIndevidoException;
+import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
 
@@ -22,10 +24,24 @@ public class PedidoService {
     public Pedido cancelarPedido(int id, int clienteId) {
         Pedido pedido = recuperarPedidoPorId(id);
         if (pedido.getCliente().getId() != clienteId) {
-            throw new IllegalArgumentException("Este pedido não pertence a este cliente.");
+            throw new TentativaAcessoIndevidoException("Você não tem permissão para cancelar este pedido.");
+            //System.out.println("Você não tem permissão para cancelar este pedido.");
+            //return null;
         }
         if (pedido.getStatus().equals("Cancelado")) {
-            throw new IllegalStateException("Este pedido já foi cancelado.");
+            throw new StatusIndevidoException("Este pedido já foi cancelado.");
+            //System.out.println("Este pedido já foi cancelado.");
+            //return null;
+        }
+        else if (pedido.getStatus().equals("Faturado")) {
+            throw new StatusIndevidoException("Este pedido já foi faturado.");
+            //System.out.println("Este pedido já foi faturado.");
+            //return null;
+        }
+        else if (pedido.getStatus().equals("Parcialmente Faturado")) {
+            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado.");
+            //System.out.println("Este pedido já foi faturado.");
+            //return null;
         }
         pedido.setDataCancelamento(LocalDate.now().toString());
         pedido.setStatus("Cancelado");
@@ -41,7 +57,7 @@ public class PedidoService {
     public Pedido remover(int id) {
         Pedido pedido = recuperarPedidoPorId(id);
         if (pedido == null) {
-            throw new IllegalArgumentException("Pedido inexistente.");
+            throw new EntidadeNaoEncontradaException("Pedido inexistente.");
         }
         pedidoDAO.remover(pedido.getId());
         return pedido;
