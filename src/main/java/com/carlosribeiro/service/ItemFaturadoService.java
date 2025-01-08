@@ -2,11 +2,13 @@ package com.carlosribeiro.service;
 
 import com.carlosribeiro.dao.ItemFaturadoDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemDePedido;
 import com.carlosribeiro.model.ItemFaturado;
 import com.carlosribeiro.model.Pedido;
 import com.carlosribeiro.util.FabricaDeDaos;
+import com.carlosribeiro.exception.NenhumItemFaturadoException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,12 +53,10 @@ public class ItemFaturadoService {
     public boolean faturarPedido(Pedido pedido) {
 
         if ("Cancelado".equals(pedido.getStatus())) {
-            System.out.println("O pedido está cancelado e não pode ser faturado.");
-            return false;
+            throw new StatusIndevidoException("O pedido foi cancelado.");
         }
         if ("Faturado".equals(pedido.getStatus())) {
-            System.out.println("O pedido já foi faturado.");
-            return false;
+            throw new StatusIndevidoException("O pedido já foi faturado.");
         }
 
         boolean algumItemFaturado = false;
@@ -92,8 +92,9 @@ public class ItemFaturadoService {
                 pedido.setStatus("Parcialmente Faturado");
             }
 
-        } else {
-            System.out.println("Nenhum item do pedido foi faturado. (falta de estoque)");
+        }
+        else {
+            throw new NenhumItemFaturadoException("Nenhum item faturado. (Falta de estoque)");
         }
 
         return algumItemFaturado;
@@ -111,15 +112,8 @@ public class ItemFaturadoService {
 
             itemDePedido.getItensFaturados().add(itemFaturado);
 
-            if (itemDePedido.getQtdAFaturar() > 0) {
-                System.out.println("Ainda falta faturar " + itemDePedido.getQtdAFaturar() + " unidades do livro '" + itemDePedido.getLivro().getTitulo() + "' por falta de estoque.");
-            }
             return itemFaturado;
         }
-//        else if (qtdAFaturar > 0) {
-//            //return null;
-//            //System.out.println("Não foi possível faturar o livro '" + itemDePedido.getLivro().getTitulo() + "' por falta de estoque.");
-//        }
         return null;
     }
 

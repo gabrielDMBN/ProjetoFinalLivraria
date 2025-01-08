@@ -6,6 +6,7 @@ import com.carlosribeiro.service.ItemDePedidoService;
 import com.carlosribeiro.service.ItemFaturadoService;
 import com.carlosribeiro.service.PedidoService;
 import com.carlosribeiro.exception.StatusIndevidoException;
+import com.carlosribeiro.exception.NenhumItemFaturadoException;
 
 import java.util.Scanner;
 
@@ -34,16 +35,21 @@ public class PrincipalItemFaturado {
                     Pedido pedido = pedidoService.recuperarPedidoPorId(pedidoId);
 
                     if (pedido != null && pedido.getCliente().getId() == clienteId) {
-                        boolean algumItemFaturado = itemFaturadoService.faturarPedido(pedido);
+                        try {
+//                            boolean algumItemFaturado =
+                            itemFaturadoService.faturarPedido(pedido);
+                        }
+                        catch (NenhumItemFaturadoException | StatusIndevidoException e){
+                            System.out.println(e.getMessage());
+                        }
+
                         if (pedido.getStatus() == "Faturado") {
                             System.out.println("Pedido faturado com sucesso.");
                         }
                         else if (pedido.getStatus() == "Parcialmente Faturado") {
                             System.out.println("Pedido parcialmente faturado.");
                         }
-//                        if (algumItemFaturado) {
-//                            System.out.println("Pedido faturado com sucesso.");
-//                        }
+
                     } else {
                         System.out.println("Pedido não encontrado ou não pertence ao cliente.");
                     }

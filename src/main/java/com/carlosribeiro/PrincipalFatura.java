@@ -2,6 +2,8 @@ package com.carlosribeiro;
 
 import com.carlosribeiro.model.Cliente;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.TentativaAcessoIndevidoException;
+import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemFaturado;
 import com.carlosribeiro.service.FaturaService;
@@ -62,17 +64,17 @@ public class PrincipalFatura {
                     try {
                         faturaService.cancelarFatura(faturaId, cliente.getId());
                         System.out.println("Fatura cancelada com sucesso!");
-                    } catch (EntidadeNaoEncontradaException e) {
-                        System.out.println("Erro ao cancelar a fatura: " + e.getMessage());
+                    } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
+                        System.out.println('\n' + e.getMessage());
                     }
                 }
                 case 3 -> {
                     int faturaId = Console.readInt("Informe o ID da fatura que deseja remover: ");
                     try {
                         faturaService.remover(faturaId, cliente.getId());
-                       // System.out.println("Fatura removida com sucesso!");
-                    } catch (EntidadeNaoEncontradaException e) {
-                        System.out.println("Erro ao remover a fatura: " + e.getMessage());
+                        System.out.println("Fatura removida com sucesso!");
+                    } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
+                        System.out.println('\n' + e.getMessage());
                     }
                 }
                 case 4 -> continua = false;
