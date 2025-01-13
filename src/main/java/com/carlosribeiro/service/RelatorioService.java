@@ -95,18 +95,18 @@ public class RelatorioService {
         return itensFaturadosNoMesEAno;
     }
 
-    public void consolidarItensPorNome(List<ItemDePedido> itens) {
-        Map<String, Integer> consolidado = new HashMap<>();
-
-        for (ItemDePedido item : itens) {
-            String nomeLivro = item.getLivro().getTitulo();
-            int quantidade = item.getQtdPedida() - item.getQtdAFaturar();
-
-            consolidado.put(nomeLivro, consolidado.getOrDefault(nomeLivro, 0) + quantidade);
-        }
-
-        consolidado.forEach((nome, quantidade) -> System.out.println("Produto: " + nome + " | Quantidade: " + quantidade));
-    }
+//    public void consolidarItensPorNome(List<ItemDePedido> itens) {
+//        Map<String, Integer> consolidado = new HashMap<>();
+//
+//        for (ItemDePedido item : itens) {
+//            String nomeLivro = item.getLivro().getTitulo();
+//            int quantidade = item.getQtdPedida() - item.getQtdAFaturar();
+//
+//            consolidado.put(nomeLivro, consolidado.getOrDefault(nomeLivro, 0) + quantidade);
+//        }
+//
+//        consolidado.forEach((nome, quantidade) -> System.out.println("Produto: " + nome + " | Quantidade: " + quantidade));
+//    }
 
 
 }
