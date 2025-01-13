@@ -117,4 +117,8 @@ public class FaturaService {
     public List<Fatura> recuperarTodasAsFaturasDeUmCliente(int clienteId) {
         return faturaDAO.recuperarTodasAsFaturasDeUmCliente(clienteId);
     }
+
+    public List<Fatura> recuperarTodasAsFaturas() {
+        return faturaDAO.recuperarTodos();
+    }
 }

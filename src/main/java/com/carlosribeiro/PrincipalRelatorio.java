@@ -1,6 +1,7 @@
 package com.carlosribeiro;
 
 import com.carlosribeiro.model.Livro;
+import com.carlosribeiro.model.ItemFaturado;
 import com.carlosribeiro.service.LivroService;
 import com.carlosribeiro.service.RelatorioService;
 import com.carlosribeiro.service.ItemFaturadoService;
@@ -47,7 +48,11 @@ public class PrincipalRelatorio {
                     if (itens.isEmpty()) {
                         System.out.println("Nenhum item faturado encontrado.");
                     } else {
-                        itens.forEach(item -> System.out.println("- " + itemFaturadoService.relatorioUmResumo(item)));
+                        for (ItemFaturado item : itens) {
+                            System.out.println("Livro = " + item.getItemDePedido().getLivro().getTitulo() +
+                                    "  Quantidade Faturada = " + item.getQtdFaturada() +
+                                    "  Data da Fatura = " + item.getFatura().getDataEmissao());
+                        }
                     }
                 }
                 case 2 -> {
@@ -63,7 +68,11 @@ public class PrincipalRelatorio {
                     if (itens.isEmpty()) {
                         System.out.println("Nenhum livro faturado encontrado.");
                     } else {
-                        relatorioService.consolidarItensPorNome(itens);
+                        for (var item : itens) {
+                            System.out.println("Livro = " + item.getLivro().getTitulo() +
+                                    "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum());
+                        }
+                        //relatorioService.consolidarItensPorNome(itens);
                     }
                 }
                 case 4 -> continua = false;

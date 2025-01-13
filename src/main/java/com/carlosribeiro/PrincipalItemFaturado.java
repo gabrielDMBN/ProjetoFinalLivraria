@@ -21,7 +21,7 @@ public class PrincipalItemFaturado {
 
         boolean continua = true;
         while (continua) {
-            itemDePedidoService.listarPedidosResumidos(clienteId);
+            //itemDePedidoService.listarPedidosResumidos(clienteId);
 
             System.out.println("Escolha uma opção:");
             System.out.println("1. Faturar Pedido");

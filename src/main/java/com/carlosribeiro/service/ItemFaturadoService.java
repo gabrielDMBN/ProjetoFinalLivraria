@@ -117,9 +117,9 @@ public class ItemFaturadoService {
         return null;
     }
 
-    public String relatorioUmResumo(ItemFaturado itemDePedido) {
-        return "Livro = " + itemDePedido.getItemDePedido().getLivro().getTitulo() +
-                "  Quantidade Faturada = " + itemDePedido.getQtdFaturada() + "  Data da Fatura = " + itemDePedido.getFatura().getDataEmissao();
-    }
+//    public String relatorioUmResumo(ItemFaturado itemDePedido) {
+//        return "Livro = " + itemDePedido.getItemDePedido().getLivro().getTitulo() +
+//                "  Quantidade Faturada = " + itemDePedido.getQtdFaturada() + "  Data da Fatura = " + itemDePedido.getFatura().getDataEmissao();
+//    }
 
 }
