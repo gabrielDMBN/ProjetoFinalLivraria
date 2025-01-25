@@ -14,8 +14,9 @@ public class Principal {
         PrincipalCliente principalCliente = new PrincipalCliente();
         PrincipalLivro principalLivro = new PrincipalLivro();
         PrincipalRelatorio principalRelatorio = new PrincipalRelatorio(new RelatorioService());
+        PrincipalTesteSistema principalTesteSistema = new PrincipalTesteSistema();
 
-       recuperarDados();
+       //recuperarDados();
 
         boolean continua = true;
         while (continua) {
@@ -24,9 +25,10 @@ public class Principal {
             System.out.println('\n' + "1. Tratar Clientes");
             System.out.println("2. Tratar Livros");
             System.out.println("3. Tratar Relatórios");
-            System.out.println("4. Sair");
+            System.out.println("4. Testar o Sistema");
+            System.out.println("5. Sair");
 
-            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 4:");
+            int opcao = Console.readInt('\n' + "Digite um número entre 1 e 5:");
 
             System.out.println();
 
@@ -34,7 +36,9 @@ public class Principal {
                 case 1 -> principalCliente.principal();
                 case 2 -> principalLivro.principal();
                 case 3 -> principalRelatorio.principal();
-                case 4 -> {
+                case 4 -> principalTesteSistema.principal();
+
+                case 5 ->{
                     salvarDados();
                     continua = false;
                 }
