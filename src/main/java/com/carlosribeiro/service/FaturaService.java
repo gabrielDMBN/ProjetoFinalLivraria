@@ -29,12 +29,12 @@ public class FaturaService {
                 .filter(f -> f.getDataCancelamento() == null)
                 .count();
 
-        if (faturasNaoCanceladas >= 4) {
-            System.out.println("O cliente possui " + faturasNaoCanceladas + " faturas não canceladas, logo, terá um desconto de 5%.");
+        if (faturasNaoCanceladas >= 3) {
+            System.out.println("O cliente possui 4 ou mais faturas não canceladas, logo, terá um desconto de 5%.");
             double valorTotal = fatura.getValorTotalFatura();
             double desconto = valorTotal * 0.05;
             fatura.setValorDescontadoFatura(desconto);
-            fatura.setValorTotalFatura(valorTotal - desconto);
+            fatura.setValorTotalFatura(valorTotal);
         } else {
             fatura.setValorDescontadoFatura(0);
         }

@@ -50,7 +50,7 @@ public class ItemFaturadoService {
         return itemFaturadoDAO.recuperarItensFaturadosPorItemDePedido(itemDePedidoId);
     }
 
-    public boolean faturarPedido(Pedido pedido) {
+    public Fatura faturarPedido(Pedido pedido) {
 
         if ("Cancelado".equals(pedido.getStatus())) {
             throw new StatusIndevidoException("O pedido foi cancelado.");
@@ -91,13 +91,12 @@ public class ItemFaturadoService {
             } else {
                 pedido.setStatus("Parcialmente Faturado");
             }
-
+            return fatura;
         }
         else {
             throw new NenhumItemFaturadoException("Nenhum item faturado. (Falta de estoque)");
         }
 
-        return algumItemFaturado;
     }
 
     private ItemFaturado faturarItemDePedido(ItemDePedido itemDePedido) {

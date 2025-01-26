@@ -1,12 +1,10 @@
 package com.carlosribeiro;
 
-import com.carlosribeiro.exception.ClienteComDependenciasException;
-import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
-import com.carlosribeiro.model.Cliente;
-import com.carlosribeiro.model.ItemDePedido;
-import com.carlosribeiro.model.Livro;
-import com.carlosribeiro.model.Pedido;
+import com.carlosribeiro.dao.FaturaDAO;
+import com.carlosribeiro.exception.*;
+import com.carlosribeiro.model.*;
 import com.carlosribeiro.service.*;
+import com.carlosribeiro.util.FabricaDeDaos;
 import corejava.Console;
 
 import java.time.LocalDate;
@@ -14,6 +12,7 @@ import java.util.List;
 
 public class PrincipalTesteSistema
 {
+
     //serviços
     private final ClienteService clienteService = new ClienteService();
     private final PedidoService pedidoService = new PedidoService();
@@ -188,7 +187,8 @@ public class PrincipalTesteSistema
 //         acrescente um try / catch no código escrito para testar essas funcionalidades, caso contrário a exceção gerada irá
 //         explodir na tela e o teste do sistema será interrompido.
 
-    public void principal() {
+    public void principal()
+    {
 
         boolean continua = true;
         while (continua) {
@@ -235,6 +235,7 @@ public class PrincipalTesteSistema
             System.out.println("\nCliente número " + umCliente2.getId() + " cadastrado com sucesso!");
 
             //4) Cadastrar 5 pedidos para o cliente 1 (ao cadastrar cada pedido a thread que simula o envio de email deverá ser execut
+            //5) Listar todos os pedidos exibindo para cada pedido o seu status e as quantidades pedidas de cada livro.
 
             Pedido umPedido1 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
             pedidoService.incluir(umPedido1);
@@ -301,13 +302,177 @@ public class PrincipalTesteSistema
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
 
+            //6) Listar os Livros com suas respectivas quantidades em estoque.
+            for (Livro livro : livros) {
+                System.out.println(livro);
+            }
 
-            //5) Listar todos os pedidos exibindo para cada pedido o seu status e as quantidades pedidas de cada livro.
+            //7) Faturar os pedidos 1 e 2, nesta ordem
+            Fatura fatura1 = itemFaturadoService.faturarPedido(umPedido1);
+            Fatura fatura2 = itemFaturadoService.faturarPedido(umPedido2);
+
+            //8) Cancelar a fatura 2.
+            try {
+                faturaService.cancelarFatura(2, umCliente1.getId());
+                System.out.println("Fatura cancelada com sucesso!");
+            } catch (EntidadeNaoEncontradaException | StatusIndevidoException |
+                     TentativaAcessoIndevidoException e) {
+                System.out.println('\n' + e.getMessage());
+            }
+
+            //9) Faturar os pedidos 3 e 4, nesta ordem, para o mês de janeiro de 2025.
+
+            try {
+                Fatura fatura3 = itemFaturadoService.faturarPedido(umPedido3);
+            }
+            catch (NenhumItemFaturadoException | StatusIndevidoException e){
+                System.out.println(e.getMessage());
+            }
+
+            try {
+                Fatura fatura4 = itemFaturadoService.faturarPedido(umPedido4);
+            }
+            catch (NenhumItemFaturadoException | StatusIndevidoException e){
+                System.out.println(e.getMessage());
+            }
+
+            //10) Faturar o pedido 5
+            try {
+                Fatura fatura5 = itemFaturadoService.faturarPedido(umPedido5);
+            }
+            catch (NenhumItemFaturadoException | StatusIndevidoException e){
+                System.out.println(e.getMessage());
+            }
+
+            //11) Listar os Livros com suas respectivas quantidades em estoque.
+            for (Livro livro : livros) {
+                System.out.println(livro);
+            }
+
+            //12) Listar todos as faturas.
+            List<Fatura> faturas = faturaService.recuperarTodasAsFaturasDeUmCliente(umCliente1.getId());
+            if (faturas.isEmpty()) {
+                System.out.println("Nenhuma fatura encontrada para o cliente ID: " + umCliente1.getId());
+            } else {
+                System.out.println("Faturas do cliente ID: " + umCliente1.getId());
+                for (Fatura fatura : faturas) {
+                    System.out.println("-----------------------------");
+                    System.out.println("Fatura ID: " + fatura.getId());
+                    // System.out.println("Pedido ID: " + fatura.getPedido().getId());
+                    System.out.println("Data de Emissão: " + fatura.getDataEmissao());
+                    System.out.println("Data de Cancelamento: " + fatura.getDataCancelamento());
+                    System.out.println("Valor Total: " + fatura.getValorTotalFatura());
+                    System.out.println("Valor Descontado: " + fatura.getValorDescontadoFatura());
+                    System.out.println("Itens Faturados: " + fatura.getItensFaturados().size());
+                    for (ItemFaturado item : fatura.getItensFaturados()) {
+                        System.out.println("  - Livro: " + item.getItemDePedido().getLivro().getTitulo());
+                        System.out.println("    Preço: " + item.getItemDePedido().getLivro().getPreco());
+                        System.out.println("    Quantidade: " + item.getQtdFaturada());
+                    }
+                    System.out.println("-----------------------------");
+                }
+            }
+
+            //13) Cancelar o pedido 5;
+            try {
+                pedidoService.cancelarPedido(umPedido5.getId(), umCliente1.getId());
+            } catch (EntidadeNaoEncontradaException | StatusIndevidoException e) {
+                System.out.println(e.getMessage());
+            }
+
+            //14) Cancelar a fatura 3
+            try {
+                faturaService.cancelarFatura(3, umCliente1.getId());
+                System.out.println("Fatura cancelada com sucesso!");
+            } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
+                System.out.println('\n' + e.getMessage());
+            }
+
+            //15) Remover a fatura 3
+            try {
+                faturaService.remover(3, umCliente1.getId());
+                System.out.println("Fatura removida com sucesso!");
+            } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
+                System.out.println('\n' + e.getMessage());
+            }
+
+            //16) Remover a fatura 4
+            try {
+                faturaService.remover(4, umCliente1.getId());
+                System.out.println("Fatura removida com sucesso!");
+            } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
+                System.out.println('\n' + e.getMessage());
+            }
+
+            //17) Listar os Livros com suas respectivas quantidades em estoque.
+            for (Livro livro : livros) {
+                System.out.println(livro);
+            }
+
+            //18) Abastecer o estoque
+            System.out.println("========================================================");
+            System.out.println("Abastecendo o estoque...");
+            System.out.println("========================================================");
+            livroService.alterarQtdEstoque(1, umLivro1.getQtdEstoque() + 100);
+            livroService.alterarQtdEstoque(2, umLivro2.getQtdEstoque() + 200);
+            livroService.alterarQtdEstoque(3, umLivro3.getQtdEstoque() + 300);
+            livroService.alterarQtdEstoque(4, umLivro4.getQtdEstoque() + 400);
+            livroService.alterarQtdEstoque(5, umLivro5.getQtdEstoque() + 500);
+
+            //19) Listar os Livros com suas respectivas quantidades em estoque.
+            for (Livro livro : livros) {
+                System.out.println(livro);
+            }
+
+            //20) Faturar os pedidos 1 a 5, nesta ordem.
+            List<Pedido> pedidos = pedidoService.recuperarTodosOsPedidosDeUmCliente(umCliente1.getId());
+            for (Pedido pedido : pedidos) {
+                try {
+                    System.out.println("Faturando pedido " + pedido.getId());
+                    Fatura fatura = itemFaturadoService.faturarPedido(pedido);
+                } catch (NenhumItemFaturadoException | StatusIndevidoException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            //21) Executar o relatório 1
+            System.out.println("========================================================");
+            var itens = relatorioService.getItensFaturadosPorLivroEMes(1, 1, 2025);
+            System.out.println("Itens faturados no mês " + 01 + " do ano " + 2025 + ":");
+            if (itens.isEmpty()) {
+                System.out.println("Nenhum item faturado encontrado.");
+            } else {
+                for (ItemFaturado item : itens) {
+                    System.out.println("Livro = " + item.getItemDePedido().getLivro().getTitulo() +
+                            "  Quantidade Faturada = " + item.getQtdFaturada() +
+                            "  Data da Fatura = " + item.getFatura().getDataEmissao());
+                }
+            }
+            System.out.println("========================================================");
+
+            //22) Executar o relatório 2
+            System.out.println("========================================================");
+            var livrosNFaturados = relatorioService.getLivrosNuncaFaturados();
+            System.out.println("Livros nunca faturados:");
+            livrosNFaturados.forEach(livro -> System.out.println(livro.getTitulo()));
+            System.out.println("========================================================");
+
+            //23) Executar o relatório 3
+            System.out.println("========================================================");
+            var livrosFaturados = relatorioService.getLivrosFaturadosPorMesEAno(1, 2025);
+            System.out.println("Livros faturados no mês " + 01 + " do ano " + 2025 + ":");
+            if (livrosFaturados.isEmpty()) {
+                System.out.println("Nenhum livro faturado encontrado.");
+            } else for (var item : livrosFaturados) {
+                System.out.println("Livro = " + item.getLivro().getTitulo() +
+                        "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum());
+            }
 
 
 
             //finalizar o teste
             continua = false;
-            }
-        }
+    }
 }
+}
+
