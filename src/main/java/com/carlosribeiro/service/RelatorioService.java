@@ -35,7 +35,7 @@ public class RelatorioService {
 
             for (Fatura fatura : faturasDoCliente) {
                 LocalDate dataFatura = fatura.getDataEmissao();
-                if (dataFatura.getMonthValue() == mes && dataFatura.getYear() == ano) {
+                if (dataFatura.getMonthValue() == mes && dataFatura.getYear() == ano ) {
                     for (ItemFaturado itemFaturado : fatura.getItensFaturados()) {
                         ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemFaturado.getItemDePedido().getId());
                         if (itemDePedido.getLivro().getId() == livroId) {
@@ -76,18 +76,14 @@ public class RelatorioService {
     //esse metodo retorna os itens de pedido que foram faturados em um determinado mes e ano
     public List<ItemDePedido> getLivrosFaturadosPorMesEAno(int mes, int ano) {
         List<ItemDePedido> itensFaturadosNoMesEAno = new ArrayList<>();
-        List<Cliente> todosClientes = clienteDAO.recuperarTodos();
+        List<Livro> todosLivros = livroDAO.recuperarTodos();
 
-        for (Cliente cliente : todosClientes) {
-            List<Fatura> faturasDoCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(cliente.getId());
-
-            for (Fatura fatura : faturasDoCliente) {
-                LocalDate dataFatura = fatura.getDataEmissao();
-                if (dataFatura.getMonthValue() == mes && dataFatura.getYear() == ano) {
-                    for (ItemFaturado itemFaturado : fatura.getItensFaturados()) {
-                        ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemFaturado.getItemDePedido().getId());
-                        itensFaturadosNoMesEAno.add(itemDePedido);
-                    }
+        for (Livro livro : todosLivros) {
+            List<ItemFaturado> itensFaturados = getItensFaturadosPorLivroEMes(livro.getId(), mes, ano);
+            for (ItemFaturado itemFaturado : itensFaturados) {
+                ItemDePedido itemDePedido = itemDePedidoDAO.recuperarPorId(itemFaturado.getItemDePedido().getId());
+                if (!itensFaturadosNoMesEAno.contains(itemDePedido)) {
+                    itensFaturadosNoMesEAno.add(itemDePedido);
                 }
             }
         }

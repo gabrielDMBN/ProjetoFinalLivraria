@@ -8,10 +8,14 @@ import com.carlosribeiro.util.FabricaDeDaos;
 import corejava.Console;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PrincipalTesteSistema
 {
+    //dao
+    private final FaturaDAO faturaDAO = FabricaDeDaos.getDAO(FaturaDAO.class);
 
     //serviços
     private final ClienteService clienteService = new ClienteService();
@@ -361,6 +365,7 @@ public class PrincipalTesteSistema
 
             //8) Cancelar a fatura 2.
             try {
+                System.out.println("Cancelando fatura 2...");
                 faturaService.cancelarFatura(2, umCliente1.getId());
                 System.out.println("Fatura cancelada com sucesso!");
             } catch (EntidadeNaoEncontradaException | StatusIndevidoException |
@@ -436,6 +441,7 @@ public class PrincipalTesteSistema
 
             //14) Cancelar a fatura 3
             try {
+                System.out.println("Cancelando fatura 3...");
                 faturaService.cancelarFatura(3, umCliente1.getId());
                 System.out.println("Fatura cancelada com sucesso!");
             } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
@@ -444,6 +450,7 @@ public class PrincipalTesteSistema
 
             //15) Remover a fatura 3
             try {
+                System.out.println("Removendo fatura 3...");
                 faturaService.remover(3, umCliente1.getId());
                 System.out.println("Fatura removida com sucesso!");
             } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
@@ -452,6 +459,7 @@ public class PrincipalTesteSistema
 
             //16) Remover a fatura 4
             try {
+                System.out.println("Removendo fatura 4...");
                 faturaService.remover(4, umCliente1.getId());
                 System.out.println("Fatura removida com sucesso!");
             } catch (EntidadeNaoEncontradaException | StatusIndevidoException | TentativaAcessoIndevidoException e) {
@@ -496,7 +504,7 @@ public class PrincipalTesteSistema
             //21) Executar o relatório 1
             System.out.println("========================================================");
             var itens = relatorioService.getItensFaturadosPorLivroEMes(1, 1, 2025);
-            System.out.println("Itens faturados no mês " + 01 + " do ano " + 2025 + ":");
+            System.out.println("Livro " + 1 + " faturados no mês " + 01 + " do ano " + 2025 + ":");
             if (itens.isEmpty()) {
                 System.out.println("Nenhum item faturado encontrado.");
             } else {
@@ -521,13 +529,24 @@ public class PrincipalTesteSistema
             System.out.println("Livros faturados no mês " + 01 + " do ano " + 2025 + ":");
             if (livrosFaturados.isEmpty()) {
                 System.out.println("Nenhum livro faturado encontrado.");
-            } else for (var item : livrosFaturados) {
-                System.out.println("Livro = " + item.getLivro().getTitulo() +
-                        "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum());
             }
-            //relatorioService.consolidarItensPorNome(itens);
+//            else for (var item : livrosFaturados) {
+//                System.out.println("Livro = " + item.getLivro().getTitulo() +
+//                        "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum()+" Cliente = "+item.getPedido().getCliente().getNome());
+//            }
 
+            Map<String, Integer> consolidado = new HashMap<>();
+
+            for (ItemDePedido item : livrosFaturados) {
+                String nomeLivro = item.getLivro().getTitulo();
+                int quantidade = item.getQtdPedida() - item.getQtdAFaturar();
+
+                consolidado.put(nomeLivro, consolidado.getOrDefault(nomeLivro, 0) + quantidade);
+            }
+            consolidado.forEach((nome, quantidade) -> System.out.println("Produto: " + nome + " | Quantidade: " + quantidade));
             System.out.println("========================================================");
+//
+//
 
             System.out.println("Teste finalizado!");
 
@@ -536,5 +555,5 @@ public class PrincipalTesteSistema
             continua = false;
     }
 }
-}
 
+}
