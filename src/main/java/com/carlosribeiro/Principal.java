@@ -16,7 +16,7 @@ public class Principal {
         PrincipalRelatorio principalRelatorio = new PrincipalRelatorio(new RelatorioService());
         PrincipalTesteSistema principalTesteSistema = new PrincipalTesteSistema();
 
-       //recuperarDados();
+       recuperarDados();
 
         boolean continua = true;
         while (continua) {

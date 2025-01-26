@@ -23,6 +23,7 @@ public class PrincipalTesteSistema
     private final RelatorioService relatorioService = new RelatorioService();
 
     //principais
+    PrincipalEnvioEmail envioEmail = new PrincipalEnvioEmail();
     private final PrincipalCliente principalCliente = new PrincipalCliente();
     private final PrincipalPedido principalPedido = new PrincipalPedido();
     private final PrincipalFatura principalFatura = new PrincipalFatura();
@@ -220,10 +221,12 @@ public class PrincipalTesteSistema
             System.out.println("\nLivro número " + umLivro5.getId() + " cadastrado com sucesso!");
 
             //2) Listar os produtos cadastrados. Ao listar os produtos, o nome do livro e a quantidade em estoque deverão ser exibidos.
+            System.out.println("========================================================");
             List<Livro> livros = livroService.recuperarLivros();
             for (Livro livro : livros) {
                 System.out.println(livro);
             }
+            System.out.println("========================================================");
 
             //3) Cadastrar 2 clientes.
             Cliente umCliente1 = new Cliente("111", "Xxxx", "xxx@gmail.com", "11111111", "Rua X");
@@ -235,8 +238,6 @@ public class PrincipalTesteSistema
             System.out.println("\nCliente número " + umCliente2.getId() + " cadastrado com sucesso!");
 
             //4) Cadastrar 5 pedidos para o cliente 1 (ao cadastrar cada pedido a thread que simula o envio de email deverá ser execut
-            //5) Listar todos os pedidos exibindo para cada pedido o seu status e as quantidades pedidas de cada livro.
-
             Pedido umPedido1 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
             pedidoService.incluir(umPedido1);
             ItemDePedido itemDePedido1 = itemDePedidoService.incluirItemDePedido(umPedido1, umLivro1, 5);
@@ -248,6 +249,7 @@ public class PrincipalTesteSistema
             for (ItemDePedido item : itens1) {
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
+            envioEmail.enviarEmail(umPedido1.getCliente());
 
             Pedido umPedido2 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
             pedidoService.incluir(umPedido2);
@@ -260,6 +262,7 @@ public class PrincipalTesteSistema
             for (ItemDePedido item : itens2) {
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
+            envioEmail.enviarEmail(umPedido2.getCliente());
 
             Pedido umPedido3 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
             pedidoService.incluir(umPedido3);
@@ -272,6 +275,7 @@ public class PrincipalTesteSistema
             for (ItemDePedido item : itens3) {
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
+            envioEmail.enviarEmail(umPedido3.getCliente());
 
             Pedido umPedido4 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
             pedidoService.incluir(umPedido4);
@@ -286,6 +290,7 @@ public class PrincipalTesteSistema
             for (ItemDePedido item : itens4) {
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
+            envioEmail.enviarEmail(umPedido4.getCliente());
 
 
             Pedido umPedido5 = new Pedido(LocalDate.now(), null, "Processando", umCliente1, "Rua X");
@@ -301,15 +306,58 @@ public class PrincipalTesteSistema
             for (ItemDePedido item : itens5) {
                 System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
             }
+            envioEmail.enviarEmail(umPedido5.getCliente());
+
+            //5) Listar todos os pedidos exibindo para cada pedido o seu status e as quantidades pedidas de cada livro.
+            System.out.println('\n' + "========================================================");
+            System.out.println('\n' + "Listagem de pedidos:");
+            System.out.println("\nPedido número " + umPedido1.getId() + ". Status: " + umPedido1.getStatus());
+            for (ItemDePedido item : itens1) {
+                System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+            }
+
+            System.out.println("\nPedido número " + umPedido2.getId() + ". Status: " + umPedido2.getStatus());
+            for (ItemDePedido item : itens2) {
+                System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+            }
+
+            System.out.println("\nPedido número " + umPedido3.getId() + ". Status: " + umPedido3.getStatus());
+            for (ItemDePedido item : itens3) {
+                System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+            }
+
+            System.out.println("\nPedido número " + umPedido4.getId() + ". Status: " + umPedido4.getStatus());
+            for (ItemDePedido item : itens4) {
+                System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+            }
+
+            System.out.println("\nPedido número " + umPedido5.getId() + ". Status: " + umPedido5.getStatus());
+            for (ItemDePedido item : itens5) {
+                System.out.println("Livro: " + item.getLivro().getTitulo() + " | Quantidade: " + item.getQtdPedida());
+            }
+            System.out.println('\n' + "========================================================");
 
             //6) Listar os Livros com suas respectivas quantidades em estoque.
+            System.out.println('\n' + "========================================================");
             for (Livro livro : livros) {
                 System.out.println(livro);
             }
+            System.out.println('\n' + "========================================================");
 
             //7) Faturar os pedidos 1 e 2, nesta ordem
-            Fatura fatura1 = itemFaturadoService.faturarPedido(umPedido1);
-            Fatura fatura2 = itemFaturadoService.faturarPedido(umPedido2);
+            try {
+                System.out.println("Faturando pedido " + umPedido1.getId());
+                Fatura fatura1 = itemFaturadoService.faturarPedido(umPedido1);
+            } catch (NenhumItemFaturadoException | StatusIndevidoException e) {
+                System.out.println(e.getMessage());
+            }
+
+            try {
+                System.out.println("Faturando pedido " + umPedido2.getId());
+                Fatura fatura2 = itemFaturadoService.faturarPedido(umPedido2);
+            } catch (NenhumItemFaturadoException | StatusIndevidoException e) {
+                System.out.println(e.getMessage());
+            }
 
             //8) Cancelar a fatura 2.
             try {
@@ -323,6 +371,7 @@ public class PrincipalTesteSistema
             //9) Faturar os pedidos 3 e 4, nesta ordem, para o mês de janeiro de 2025.
 
             try {
+                System.out.println("Faturando pedido " + umPedido3.getId());
                 Fatura fatura3 = itemFaturadoService.faturarPedido(umPedido3);
             }
             catch (NenhumItemFaturadoException | StatusIndevidoException e){
@@ -330,6 +379,7 @@ public class PrincipalTesteSistema
             }
 
             try {
+                System.out.println("Faturando pedido " + umPedido4.getId());
                 Fatura fatura4 = itemFaturadoService.faturarPedido(umPedido4);
             }
             catch (NenhumItemFaturadoException | StatusIndevidoException e){
@@ -338,6 +388,7 @@ public class PrincipalTesteSistema
 
             //10) Faturar o pedido 5
             try {
+                System.out.println("Faturando pedido " + umPedido5.getId());
                 Fatura fatura5 = itemFaturadoService.faturarPedido(umPedido5);
             }
             catch (NenhumItemFaturadoException | StatusIndevidoException e){
@@ -345,9 +396,11 @@ public class PrincipalTesteSistema
             }
 
             //11) Listar os Livros com suas respectivas quantidades em estoque.
+            System.out.println("========================================================");
             for (Livro livro : livros) {
                 System.out.println(livro);
             }
+            System.out.println("========================================================");
 
             //12) Listar todos as faturas.
             List<Fatura> faturas = faturaService.recuperarTodasAsFaturasDeUmCliente(umCliente1.getId());
@@ -375,6 +428,7 @@ public class PrincipalTesteSistema
 
             //13) Cancelar o pedido 5;
             try {
+                System.out.println("Cancelando pedido " + umPedido5.getId());
                 pedidoService.cancelarPedido(umPedido5.getId(), umCliente1.getId());
             } catch (EntidadeNaoEncontradaException | StatusIndevidoException e) {
                 System.out.println(e.getMessage());
@@ -405,9 +459,11 @@ public class PrincipalTesteSistema
             }
 
             //17) Listar os Livros com suas respectivas quantidades em estoque.
+            System.out.println("========================================================");
             for (Livro livro : livros) {
                 System.out.println(livro);
             }
+            System.out.println("========================================================");
 
             //18) Abastecer o estoque
             System.out.println("========================================================");
@@ -420,9 +476,11 @@ public class PrincipalTesteSistema
             livroService.alterarQtdEstoque(5, umLivro5.getQtdEstoque() + 500);
 
             //19) Listar os Livros com suas respectivas quantidades em estoque.
+            System.out.println("========================================================");
             for (Livro livro : livros) {
                 System.out.println(livro);
             }
+            System.out.println("========================================================");
 
             //20) Faturar os pedidos 1 a 5, nesta ordem.
             List<Pedido> pedidos = pedidoService.recuperarTodosOsPedidosDeUmCliente(umCliente1.getId());
@@ -467,7 +525,11 @@ public class PrincipalTesteSistema
                 System.out.println("Livro = " + item.getLivro().getTitulo() +
                         "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum());
             }
+            //relatorioService.consolidarItensPorNome(itens);
 
+            System.out.println("========================================================");
+
+            System.out.println("Teste finalizado!");
 
 
             //finalizar o teste
