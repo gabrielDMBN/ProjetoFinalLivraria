@@ -3,6 +3,8 @@ package com.carlosribeiro.service;
 import com.carlosribeiro.dao.ClienteDAO;
 import com.carlosribeiro.dao.FaturaDAO;
 import com.carlosribeiro.exception.EntidadeNaoEncontradaException;
+import com.carlosribeiro.exception.TentativaAcessoIndevidoException;
+import com.carlosribeiro.exception.StatusIndevidoException;
 import com.carlosribeiro.model.Cliente;
 import com.carlosribeiro.model.Fatura;
 import com.carlosribeiro.model.ItemFaturado;
@@ -27,12 +29,12 @@ public class FaturaService {
                 .filter(f -> f.getDataCancelamento() == null)
                 .count();
 
-        if (faturasNaoCanceladas >= 4) {
-            System.out.println("O cliente possui " + faturasNaoCanceladas + " faturas não canceladas, logo, terá um desconto de 5%.");
+        if (faturasNaoCanceladas >= 3) {
+            System.out.println("O cliente possui 4 ou mais faturas não canceladas, logo, terá um desconto de 5%.");
             double valorTotal = fatura.getValorTotalFatura();
             double desconto = valorTotal * 0.05;
             fatura.setValorDescontadoFatura(desconto);
-            fatura.setValorTotalFatura(valorTotal - desconto);
+            fatura.setValorTotalFatura(valorTotal);
         } else {
             fatura.setValorDescontadoFatura(0);
         }
@@ -45,13 +47,15 @@ public class FaturaService {
     public Fatura cancelarFatura(int id, int clienteId) {
         Fatura fatura = recuperarFaturaPorId(id);
         if (fatura.getCliente().getId() != clienteId) {
-            System.out.println("A fatura não pertence ao cliente especificado.");
-            return fatura;
+            throw new TentativaAcessoIndevidoException("A fatura não pertence ao cliente especificado.");
+//            System.out.println("A fatura não pertence ao cliente especificado.");
+//            return fatura;
         }
 
         if (fatura.getDataCancelamento() != null) {
-            System.out.println("Esta fatura já foi cancelada.");
-            return fatura;
+            throw new StatusIndevidoException("Esta fatura já foi cancelada.");
+//            System.out.println("Esta fatura já foi cancelada.");
+//            return fatura;
         }
 
         List<Fatura> faturasCliente = faturaDAO.recuperarTodasAsFaturasDeUmCliente(clienteId);
@@ -61,8 +65,8 @@ public class FaturaService {
 
         //so permite cancelarr uma fatura se ele tiver mais d 3 faturas nao canceladas na conta
         if (faturasNaoCanceladas < 3) {
-            System.out.println("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
-            return fatura;
+            throw new StatusIndevidoException("Não é possível cancelar a fatura. O cliente possui apenas " + faturasNaoCanceladas + " faturas não canceladas.");
+            //return fatura;
         }
 
         fatura.setDataCancelamento(LocalDate.now());
@@ -71,9 +75,7 @@ public class FaturaService {
         for (ItemFaturado item : fatura.getItensFaturados()) {
             itemFaturadoService.reestocar(item.getId());
         }
-       // fatura.getItensFaturados().clear();
 
-        //System.out.println("Fatura cancelada com sucesso!");
         return fatura;
     }
 
@@ -84,13 +86,15 @@ public class FaturaService {
         }
 
         if (fatura.getCliente().getId() != clienteId) {
-            System.out.println("A fatura não pertence ao cliente especificado.");
-            return;
+            throw new TentativaAcessoIndevidoException("A fatura não pertence ao cliente especificado.");
+//            System.out.println("A fatura não pertence ao cliente especificado.");
+//            return;
         }
 
         if (fatura.getDataCancelamento() != null) {
-            System.out.println("Não é possível remover a fatura. A fatura já está cancelada.");
-            return;
+            throw new StatusIndevidoException("Não é possível remover a fatura. A fatura já está cancelada.");
+//            System.out.println("Não é possível remover a fatura. A fatura já está cancelada.");
+//            return;
         }
 
         // Remover itens faturados e devolver estoque
@@ -100,7 +104,6 @@ public class FaturaService {
         fatura.getItensFaturados().clear();
 
         faturaDAO.remover(fatura.getId());
-        System.out.println("Fatura removida com sucesso.");
     }
 
     public Fatura recuperarFaturaPorId(int id) {
@@ -113,5 +116,9 @@ public class FaturaService {
 
     public List<Fatura> recuperarTodasAsFaturasDeUmCliente(int clienteId) {
         return faturaDAO.recuperarTodasAsFaturasDeUmCliente(clienteId);
+    }
+
+    public List<Fatura> recuperarTodasAsFaturas() {
+        return faturaDAO.recuperarTodos();
     }
 }

@@ -25,23 +25,19 @@ public class PedidoService {
         Pedido pedido = recuperarPedidoPorId(id);
         if (pedido.getCliente().getId() != clienteId) {
             throw new TentativaAcessoIndevidoException("Você não tem permissão para cancelar este pedido.");
-            //System.out.println("Você não tem permissão para cancelar este pedido.");
-            //return null;
+
         }
         if (pedido.getStatus().equals("Cancelado")) {
             throw new StatusIndevidoException("Este pedido já foi cancelado.");
-            //System.out.println("Este pedido já foi cancelado.");
-            //return null;
+
         }
         else if (pedido.getStatus().equals("Faturado")) {
-            throw new StatusIndevidoException("Este pedido já foi faturado.");
-            //System.out.println("Este pedido já foi faturado.");
-            //return null;
+            throw new StatusIndevidoException("Este pedido já foi faturado, logo não pode ser cancelado.");
+
         }
         else if (pedido.getStatus().equals("Parcialmente Faturado")) {
-            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado.");
-            //System.out.println("Este pedido já foi faturado.");
-            //return null;
+            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado, logo não pode ser cancelado.");
+
         }
         pedido.setDataCancelamento(LocalDate.now().toString());
         pedido.setStatus("Cancelado");

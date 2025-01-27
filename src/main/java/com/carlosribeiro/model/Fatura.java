@@ -26,7 +26,7 @@ public class Fatura implements Serializable {
         this.itensFaturados = new ArrayList<>();
     }
 
-    // Getters and setters for all attributes, including the new ones
+
     public int getId() {
         return id;
     }

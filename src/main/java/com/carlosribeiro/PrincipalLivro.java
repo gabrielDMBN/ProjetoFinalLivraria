@@ -93,6 +93,7 @@ public class PrincipalLivro {
 
                     try {
                         livroService.remover(id);
+                        System.out.println('\n' + "Livro removido com sucesso!");
                     } catch (EntidadeNaoEncontradaException | ItemComDependenciasException e) {
                         System.out.println('\n' + e.getMessage());
                     }
