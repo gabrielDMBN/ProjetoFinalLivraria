@@ -530,13 +530,10 @@ public class PrincipalTesteSistema
             if (livrosFaturados.isEmpty()) {
                 System.out.println("Nenhum livro faturado encontrado.");
             }
-//            else for (var item : livrosFaturados) {
-//                System.out.println("Livro = " + item.getLivro().getTitulo() +
-//                        "  Quantidade Faturada = " + item.getItensFaturados().stream().mapToInt(ItemFaturado::getQtdFaturada).sum()+" Cliente = "+item.getPedido().getCliente().getNome());
-//            }
 
             Map<String, Integer> consolidado = new HashMap<>();
 
+            // Itera sobre os itens faturados e atualiza o mapa com a quantidade faturada de cada livro
             for (ItemDePedido item : livrosFaturados) {
                 String nomeLivro = item.getLivro().getTitulo();
                 int quantidade = item.getQtdPedida() - item.getQtdAFaturar();
@@ -545,8 +542,7 @@ public class PrincipalTesteSistema
             }
             consolidado.forEach((nome, quantidade) -> System.out.println("Produto: " + nome + " | Quantidade: " + quantidade));
             System.out.println("========================================================");
-//
-//
+
 
             System.out.println("Teste finalizado!");
 
