@@ -32,11 +32,11 @@ public class PedidoService {
 
         }
         else if (pedido.getStatus().equals("Faturado")) {
-            throw new StatusIndevidoException("Este pedido já foi faturado.");
+            throw new StatusIndevidoException("Este pedido já foi faturado, logo não pode ser cancelado.");
 
         }
         else if (pedido.getStatus().equals("Parcialmente Faturado")) {
-            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado.");
+            throw new StatusIndevidoException("Este pedido já foi parcialmente faturado, logo não pode ser cancelado.");
 
         }
         pedido.setDataCancelamento(LocalDate.now().toString());
